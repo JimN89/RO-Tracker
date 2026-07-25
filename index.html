@@ -1,0 +1,3912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>FLAG//HOURS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Bebas+Neue&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+
+  <style>
+    /* ── Reset & Root ─────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    html { font-size: 16px; }
+    body { font-family: var(--font-mono); background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+
+    /* ── Theme Variables ──────────────────────────────────── */
+    :root {
+      --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+      --font-display: 'Bebas Neue', sans-serif;
+      /* Terminal (default) */
+      --bg: #080808;
+      --bg2: #101010;
+      --bg3: #181818;
+      --bg4: #202020;
+      --border: #282828;
+      --border2: #333;
+      --accent: #f59e0b;
+      --accent-dim: rgba(245,158,11,0.12);
+      --accent-text: #000;
+      --text: #e8e8e8;
+      --text2: #888;
+      --text3: #484848;
+      --danger: #ef4444;
+      --danger-dim: rgba(239,68,68,0.12);
+      --success: #22c55e;
+      --success-dim: rgba(34,197,94,0.12);
+      --scan-color: rgba(245,158,11,0.03);
+    }
+    [data-theme="stealth"] {
+      --bg: #0d1117; --bg2: #161b22; --bg3: #1c2128; --bg4: #21262d;
+      --border: #2d333b; --border2: #373e47;
+      --accent: #22d3ee; --accent-dim: rgba(34,211,238,0.1); --accent-text: #000;
+      --text: #cdd9e5; --text2: #768390; --text3: #444c56;
+      --scan-color: rgba(34,211,238,0.025);
+    }
+    [data-theme="carbon"] {
+      --bg: #0a0a0a; --bg2: #141414; --bg3: #1c1c1c; --bg4: #242424;
+      --border: #2e2e2e; --border2: #3a3a3a;
+      --accent: #ff3333; --accent-dim: rgba(255,51,51,0.1); --accent-text: #fff;
+      --text: #f0f0f0; --text2: #707070; --text3: #404040;
+      --scan-color: rgba(255,51,51,0.025);
+    }
+    [data-theme="ghost"] {
+      --bg: #f2f2ed; --bg2: #e8e8e3; --bg3: #deded9; --bg4: #d4d4cf;
+      --border: #c4c4bf; --border2: #b4b4af;
+      --accent: #111; --accent-dim: rgba(17,17,17,0.08); --accent-text: #fff;
+      --text: #111; --text2: #666; --text3: #aaa;
+      --scan-color: transparent;
+    }
+    [data-theme="nord"] {
+      --bg: #2e3440; --bg2: #3b4252; --bg3: #434c5e; --bg4: #4c566a;
+      --border: #434c5e; --border2: #4c566a;
+      --accent: #88c0d0; --accent-dim: rgba(136,192,208,0.15); --accent-text: #2e3440;
+      --text: #eceff4; --text2: #d8dee9; --text3: #7b88a1;
+      --danger: #bf616a; --danger-dim: rgba(191,97,106,0.15);
+      --success: #a3be8c; --success-dim: rgba(163,190,140,0.15);
+      --scan-color: rgba(136,192,208,0.02);
+    }
+    [data-theme="amber"] {
+      --bg: #0c0900; --bg2: #141100; --bg3: #1c1700; --bg4: #241e00;
+      --border: #2e2800; --border2: #3d3500;
+      --accent: #ffb300; --accent-dim: rgba(255,179,0,0.12); --accent-text: #000;
+      --text: #ffe97a; --text2: #a87c00; --text3: #5a4200;
+      --danger: #ff5252; --danger-dim: rgba(255,82,82,0.12);
+      --success: #69f0ae; --success-dim: rgba(105,240,174,0.12);
+      --scan-color: rgba(255,179,0,0.03);
+    }
+    [data-theme="synthwave"] {
+      --bg: #0d0221; --bg2: #130a2e; --bg3: #1a113a; --bg4: #221848;
+      --border: #2d1f5e; --border2: #3d2a7a;
+      --accent: #f72585; --accent-dim: rgba(247,37,133,0.15); --accent-text: #fff;
+      --text: #e0d7ff; --text2: #9d8ec7; --text3: #4d3d7a;
+      --danger: #ff4d6d; --danger-dim: rgba(255,77,109,0.15);
+      --success: #4cc9f0; --success-dim: rgba(76,201,240,0.15);
+      --scan-color: rgba(247,37,133,0.025);
+    }
+    [data-theme="forest"] {
+      --bg: #0b1a0e; --bg2: #112216; --bg3: #172c1c; --bg4: #1d3622;
+      --border: #234228; --border2: #2e5433;
+      --accent: #4ade80; --accent-dim: rgba(74,222,128,0.12); --accent-text: #0b1a0e;
+      --text: #d4f0d8; --text2: #6dab7a; --text3: #2d5c36;
+      --danger: #f87171; --danger-dim: rgba(248,113,113,0.12);
+      --success: #86efac; --success-dim: rgba(134,239,172,0.12);
+      --scan-color: rgba(74,222,128,0.025);
+    }
+    [data-theme="slate"] {
+      --bg: #0f172a; --bg2: #1e293b; --bg3: #253347; --bg4: #2d3f55;
+      --border: #334155; --border2: #475569;
+      --accent: #7c3aed; --accent-dim: rgba(124,58,237,0.15); --accent-text: #fff;
+      --text: #e2e8f0; --text2: #94a3b8; --text3: #475569;
+      --danger: #f43f5e; --danger-dim: rgba(244,63,94,0.15);
+      --success: #34d399; --success-dim: rgba(52,211,153,0.15);
+      --scan-color: rgba(124,58,237,0.02);
+    }
+    [data-theme="solar"] {
+      --bg: #001b2e; --bg2: #002a45; --bg3: #003459; --bg4: #003f6b;
+      --border: #004e83; --border2: #005f9e;
+      --accent: #00c8ff; --accent-dim: rgba(0,200,255,0.12); --accent-text: #001b2e;
+      --text: #cceeff; --text2: #4d9ab5; --text3: #1a5470;
+      --danger: #ff5f6d; --danger-dim: rgba(255,95,109,0.15);
+      --success: #00e5a0; --success-dim: rgba(0,229,160,0.15);
+      --scan-color: rgba(0,200,255,0.025);
+    }
+
+    /* ── Scanline effect ──────────────────────────────────── */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background: repeating-linear-gradient(0deg, var(--scan-color) 0px, var(--scan-color) 1px, transparent 1px, transparent 3px);
+      pointer-events: none; z-index: 9999;
+    }
+
+    /* ── Scrollbar ────────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 3px; height: 3px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border2); }
+
+    /* ── Typography ───────────────────────────────────────── */
+    .display { font-family: var(--font-display); letter-spacing: 0.05em; }
+    .mono { font-family: var(--font-mono); }
+    .label { font-size: 0.58rem; letter-spacing: 0.18em; color: var(--text3); text-transform: uppercase; }
+
+    /* ── Buttons ──────────────────────────────────────────── */
+    .btn {
+      font-family: var(--font-mono); border: none; cursor: pointer;
+      font-size: 0.7rem; letter-spacing: 0.12em; font-weight: 700;
+      padding: 0.7rem 1.2rem; transition: opacity 0.15s, transform 0.1s;
+      text-transform: uppercase; display: inline-flex; align-items: center; gap: 0.4rem;
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn-accent { background: var(--accent); color: var(--accent-text); }
+    .btn-accent:hover { opacity: 0.88; }
+    .btn-ghost { background: none; border: 1px solid var(--border); color: var(--text2); }
+    .btn-ghost:hover { border-color: var(--border2); color: var(--text); }
+    .btn-danger { background: none; border: 1px solid var(--border); color: var(--danger); }
+    .btn-danger:hover { background: var(--danger-dim); }
+    .btn:disabled { opacity: 0.3; cursor: default; }
+
+    /* ── Inputs ───────────────────────────────────────────── */
+    .inp {
+      background: var(--bg3); border: 1px solid var(--border);
+      color: var(--text); padding: 0.65rem 0.85rem;
+      font-family: var(--font-mono); font-size: 0.85rem;
+      outline: none; width: 100%; transition: border-color 0.15s;
+    }
+    .inp:focus { border-color: var(--accent); }
+    .inp::placeholder { color: var(--text3); }
+    select.inp { appearance: none; -webkit-appearance: none; cursor: pointer; }
+    select.inp option { background: var(--bg3); color: var(--text); }
+    input[type="date"].inp::-webkit-calendar-picker-indicator { filter: invert(0.5); cursor: pointer; }
+
+    /* ── Cards ────────────────────────────────────────────── */
+    .card { background: var(--bg2); border: 1px solid var(--border); }
+    .card-pad { padding: 1rem; }
+
+    /* ── Layout ───────────────────────────────────────────── */
+    .page { max-width: 640px; margin: 0 auto; padding: 1rem; display: flex; flex-direction: column; gap: 0.85rem; }
+
+    /* Center topbar contents to match page max-width */
+    #topbar { justify-content: center; }
+    .topbar-inner {
+      width: 100%; max-width: 640px;
+      display: flex; align-items: stretch; justify-content: space-between;
+    }
+
+    /* ── Animations ───────────────────────────────────────── */
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes slideDown { from { opacity: 0; max-height: 0; } to { opacity: 1; max-height: 2000px; } }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+    .fade-in { animation: fadeIn 0.2s ease both; }
+    .toast-anim { animation: fadeIn 0.2s ease both; }
+
+    /* ── Sign-in Page ─────────────────────────────────────── */
+    #signin-page {
+      min-height: 100vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 2rem; gap: 2.5rem;
+    }
+    .signin-logo { text-align: center; }
+    .signin-logo .wordmark { font-family: var(--font-display); font-size: 4rem; color: var(--accent); letter-spacing: 0.08em; line-height: 1; }
+    .signin-logo .sub { font-size: 0.62rem; letter-spacing: 0.22em; color: var(--text3); margin-top: 0.3rem; }
+    .signin-box {
+      width: 100%; max-width: 380px;
+      background: var(--bg2); border: 1px solid var(--border);
+      padding: 2rem; display: flex; flex-direction: column; gap: 1.25rem;
+    }
+    .signin-note { font-size: 0.62rem; color: var(--text3); line-height: 1.7; border-top: 1px solid var(--border); padding-top: 1rem; }
+    .signin-divider {
+      display: flex; align-items: center; gap: 0.75rem;
+    }
+    .signin-divider::before, .signin-divider::after {
+      content: ''; flex: 1; height: 1px; background: var(--border);
+    }
+    .signin-divider span { font-size: 0.58rem; letter-spacing: 0.18em; color: var(--text3); white-space: nowrap; }
+    .local-toggle {
+      background: none; border: none; color: var(--text3);
+      font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.12em;
+      cursor: pointer; text-decoration: underline; text-transform: uppercase;
+      padding: 0; transition: color 0.15s; text-align: center; width: 100%;
+    }
+    .local-toggle:hover { color: var(--text2); }
+    .local-panel { display: flex; flex-direction: column; gap: 0.85rem; }
+    .drive-sync-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--text3); flex-shrink: 0; }
+    .drive-sync-dot.synced { background: var(--success); }
+    .drive-sync-dot.syncing { background: var(--accent); animation: pulse 1s infinite; }
+    .drive-sync-dot.error { background: var(--danger); }
+    /* Avatar ring for accounts with a profile image */
+    .avatar.google-avatar { border-color: var(--accent); }
+
+    /* ── Top Bar ──────────────────────────────────────────── */
+    #topbar {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--bg2); border-bottom: 1px solid var(--border);
+      display: flex; align-items: stretch; justify-content: space-between;
+    }
+    .topbar-brand {
+      font-family: var(--font-display); font-size: 1.3rem; color: var(--accent);
+      letter-spacing: 0.1em; padding: 0 1rem; display: flex; align-items: center;
+      border-right: 1px solid var(--border); flex-shrink: 0;
+    }
+    .topbar-nav { display: flex; flex: 1; }
+    .nav-btn {
+      background: none; border: none; border-bottom: 2px solid transparent;
+      color: var(--text3); font-family: var(--font-mono); font-size: 0.6rem;
+      font-weight: 700; letter-spacing: 0.14em; padding: 0.9rem 0.85rem;
+      cursor: pointer; transition: all 0.15s; text-transform: uppercase; flex: 1;
+    }
+    .nav-btn:hover { color: var(--text2); }
+    .nav-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .topbar-user {
+      display: flex; align-items: center;
+      padding: 0 0.6rem; border-left: 1px solid var(--border); flex-shrink: 0;
+      position: relative;
+    }
+    /* Drive dot sits just inside the topbar, left of avatar */
+    .drive-sync-indicator {
+      display: flex; align-items: center; gap: 0.35rem;
+      font-size: 0.55rem; letter-spacing: 0.1em; color: var(--text3);
+      padding-right: 0.5rem;
+    }
+    .avatar {
+      width: 30px; height: 30px; border-radius: 50%;
+      background: var(--accent-dim); border: 2px solid var(--accent);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.68rem; font-weight: 700; color: var(--accent);
+      overflow: hidden; flex-shrink: 0; cursor: pointer;
+      transition: box-shadow 0.15s, border-color 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .avatar:hover, .avatar.open { box-shadow: 0 0 0 3px var(--accent-dim); }
+    .avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+    /* Dropdown menu */
+    #user-menu {
+      position: absolute; top: calc(100% + 4px); right: 0;
+      background: var(--bg2); border: 1px solid var(--border2);
+      min-width: 200px; z-index: 200;
+      display: none; flex-direction: column;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+      animation: fadeIn 0.15s ease both;
+    }
+    #user-menu.open { display: flex; }
+    .user-menu-header {
+      padding: 0.85rem 1rem; border-bottom: 1px solid var(--border);
+      display: flex; flex-direction: column; gap: 0.2rem;
+    }
+    .user-menu-name { font-size: 0.78rem; font-weight: 700; color: var(--text); letter-spacing: 0.06em; }
+    .user-menu-sub { font-size: 0.58rem; color: var(--text3); letter-spacing: 0.1em; }
+    .user-menu-item {
+      display: flex; align-items: center; gap: 0.6rem;
+      padding: 0.7rem 1rem; cursor: pointer;
+      font-family: var(--font-mono); font-size: 0.65rem;
+      letter-spacing: 0.1em; color: var(--text2); text-transform: uppercase;
+      border: none; background: none; width: 100%; text-align: left;
+      transition: background 0.12s, color 0.12s;
+      border-top: 1px solid var(--border);
+    }
+    .user-menu-item:first-of-type { border-top: none; }
+    .user-menu-item:hover { background: var(--bg3); color: var(--text); }
+    .user-menu-item.danger { color: var(--danger); }
+    .user-menu-item.danger:hover { background: var(--danger-dim); }
+    /* Backdrop to close menu on outside tap */
+    #user-menu-backdrop {
+      position: fixed; inset: 0; z-index: 199; display: none;
+    }
+    #user-menu-backdrop.open { display: block; }
+
+    /* ── Period Header ────────────────────────────────────── */
+    .period-header {
+      background: var(--bg2); border: 1px solid var(--border);
+      padding: 0.85rem 1rem;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .period-dates { font-size: 0.9rem; font-weight: 700; color: var(--accent); margin-top: 0.2rem; }
+    .total-hrs { font-size: 1.6rem; font-weight: 700; color: var(--text); font-family: var(--font-display); letter-spacing: 0.05em; }
+
+    /* ── Entry Form ───────────────────────────────────────── */
+    .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+    .form-grid-3 { display: grid; grid-template-columns: 2fr 1.2fr 0.8fr; gap: 0.6rem; }
+    .field { display: flex; flex-direction: column; gap: 0.25rem; }
+    .err-msg { font-size: 0.65rem; color: var(--danger); padding: 0.35rem 0; animation: fadeIn 0.15s; }
+
+    /* ── Entry Row ────────────────────────────────────────── */
+    .entry-row {
+      background: var(--bg2); border: 1px solid var(--border);
+      padding: 0.7rem 0.85rem;
+      display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem;
+      transition: border-color 0.15s; animation: fadeIn 0.18s ease both;
+    }
+    .entry-row:hover { border-color: var(--border2); }
+    .entry-ro { color: var(--accent); font-weight: 700; font-size: 0.8rem; }
+    .entry-date { color: var(--text3); font-size: 0.62rem; margin-left: 0.5rem; }
+    .entry-vehicle { color: var(--text); font-size: 0.78rem; margin-top: 0.18rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 200px; }
+    .entry-service { color: var(--text2); font-size: 0.62rem; margin-top: 0.1rem; }
+    .entry-hours { font-size: 1.1rem; font-weight: 700; color: var(--text); font-family: var(--font-display); letter-spacing: 0.05em; flex-shrink: 0; }
+    .entry-actions { display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0; }
+    .del-btn {
+      background: none; border: 1px solid var(--border); color: var(--text3);
+      font-size: 0.65rem; padding: 0.22rem 0.4rem; cursor: pointer;
+      transition: all 0.15s; font-family: var(--font-mono);
+    }
+    .del-btn:hover { border-color: var(--danger); color: var(--danger); background: var(--danger-dim); }
+
+    /* ── RO Group Card ────────────────────────────────────── */
+    .ro-group {
+      background: var(--bg2); border: 1px solid var(--border);
+      display: flex; flex-direction: column;
+      animation: fadeIn 0.18s ease both; overflow: hidden;
+    }
+    .ro-group-header {
+      padding: 0.7rem 0.85rem;
+      display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .ro-group-header-left { flex: 1; min-width: 0; }
+    .ro-group-ro { color: var(--accent); font-weight: 700; font-size: 0.85rem; }
+    .ro-group-vehicle { color: var(--text); font-size: 0.8rem; margin-top: 0.18rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .ro-group-subtotal { font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; color: var(--accent); letter-spacing: 0.05em; flex-shrink: 0; }
+    .ro-group-subtotal-label { font-size: 0.55rem; letter-spacing: 0.15em; color: var(--text3); text-align: right; }
+    .ro-service-line {
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.5rem 0.85rem; border-bottom: 1px solid var(--border);
+      background: var(--bg3);
+    }
+    .ro-service-line:last-of-type { border-bottom: none; }
+    .ro-service-info { flex: 1; min-width: 0; }
+    .ro-svc-name { font-size: 0.72rem; color: var(--text2); }
+    .ro-svc-date { font-size: 0.6rem; color: var(--text3); margin-left: 0.4rem; }
+    .ro-svc-hrs { font-family: var(--font-display); font-size: 1rem; font-weight: 700; color: var(--text); letter-spacing: 0.04em; flex-shrink: 0; }
+    .edit-btn {
+      background: none; border: 1px solid var(--border); color: var(--text3);
+      font-size: 0.6rem; padding: 0.2rem 0.38rem; cursor: pointer;
+      transition: all 0.15s; font-family: var(--font-mono); flex-shrink: 0;
+    }
+    .edit-btn:hover { border-color: var(--accent); color: var(--accent); }
+    /* RO-level note button (header) + panel */
+    .ro-note-btn {
+      background: none; border: 1px solid var(--border); color: var(--text3);
+      font-size: 0.72rem; padding: 0.2rem 0.4rem; cursor: pointer;
+      transition: all 0.15s; flex-shrink: 0; position: relative; align-self: flex-start;
+    }
+    .ro-note-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .ro-note-btn.has-note { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+    .ro-note-btn.has-note::after {
+      content: ''; position: absolute; top: -3px; right: -3px;
+      width: 7px; height: 7px; border-radius: 50%; background: var(--accent);
+      border: 1px solid var(--bg2);
+    }
+    .ro-note-panel {
+      background: var(--bg4); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+      padding: 0.75rem 0.85rem; display: flex; flex-direction: column; gap: 0.5rem;
+      animation: fadeIn 0.15s ease both;
+    }
+    .ro-note-panel textarea.inp { width: 100%; box-sizing: border-box; min-height: 4.5rem; }
+    /* Inline edit panel */
+    .ro-edit-panel {
+      background: var(--bg4); border-top: 1px solid var(--border);
+      padding: 0.75rem 0.85rem; display: flex; flex-direction: column; gap: 0.5rem;
+      animation: fadeIn 0.15s ease both;
+    }
+    .ro-edit-panel .form-grid-2 { gap: 0.45rem; }
+    .ro-edit-panel .form-grid-3 { gap: 0.45rem; }
+    .ro-edit-actions { display: flex; gap: 0.4rem; margin-top: 0.15rem; }
+    /* Add service panel */
+    .ro-add-svc-panel {
+      background: var(--bg4); border-top: 1px solid var(--border);
+      padding: 0.75rem 0.85rem; display: flex; flex-direction: column; gap: 0.5rem;
+      animation: fadeIn 0.15s ease both;
+    }
+    .ro-group-footer {
+      padding: 0.45rem 0.85rem;
+      display: flex; gap: 0.4rem; border-top: 1px solid var(--border);
+      background: var(--bg2);
+    }
+    .add-svc-btn {
+      background: none; border: 1px solid var(--border); color: var(--text2);
+      font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.1em;
+      padding: 0.35rem 0.6rem; cursor: pointer; transition: all 0.15s; text-transform: uppercase;
+    }
+    .add-svc-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── Totals Bar ───────────────────────────────────────── */
+    .totals-bar {
+      background: var(--accent-dim); border: 1px solid var(--accent);
+      padding: 0.65rem 0.85rem;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .totals-label { font-size: 0.6rem; letter-spacing: 0.15em; color: var(--accent); }
+    .totals-val { font-size: 1rem; font-weight: 700; color: var(--accent); font-family: var(--font-display); letter-spacing: 0.05em; }
+
+    /* ── History ──────────────────────────────────────────── */
+    .hist-period {
+      background: var(--bg2); border: 1px solid var(--border);
+      overflow: hidden; transition: border-color 0.15s;
+    }
+    .hist-period:hover { border-color: var(--border2); }
+    .hist-header {
+      padding: 0.85rem 1rem; display: flex; justify-content: space-between;
+      align-items: center; cursor: pointer; user-select: none;
+    }
+    .hist-period-label { font-size: 0.82rem; font-weight: 700; color: var(--text); }
+    .hist-meta { font-size: 0.62rem; color: var(--text3); margin-top: 0.15rem; }
+    .hist-total { font-size: 1.1rem; font-weight: 700; color: var(--accent); font-family: var(--font-display); letter-spacing: 0.05em; }
+    .hist-chevron { color: var(--text3); font-size: 0.65rem; transition: transform 0.2s; }
+    .hist-chevron.open { transform: rotate(180deg); }
+    .hist-body { border-top: 1px solid var(--border); padding: 0.75rem; display: flex; flex-direction: column; gap: 0.35rem; }
+    .hist-entry {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      padding: 0.5rem 0.65rem; background: var(--bg3); border: 1px solid var(--border);
+    }
+
+    /* ── Verify Page ──────────────────────────────────────── */
+    .verify-period-select { display: flex; flex-direction: column; gap: 0.5rem; }
+    .verify-ro-row {
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 0.65rem 0.85rem;
+      border: 1px solid var(--border);
+      background: var(--bg2);
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .verify-ro-row.confirmed {
+      background: var(--success-dim);
+      border-color: var(--success);
+    }
+    .verify-ro-row.missing {
+      background: var(--danger-dim);
+      border-color: var(--danger);
+    }
+    .verify-check {
+      width: 22px; height: 22px; flex-shrink: 0;
+      border: 2px solid var(--border2); background: var(--bg3);
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem; transition: all 0.15s; color: var(--success);
+    }
+    .verify-check.checked { border-color: var(--success); background: var(--success-dim); }
+    .verify-check.missing-check { border-color: var(--danger); }
+    .verify-check.marked-missing { border-color: var(--danger); background: var(--danger-dim); color: var(--danger); }
+    .verify-ro-info { flex: 1; min-width: 0; }
+    .verify-ro-num { font-size: 0.8rem; font-weight: 700; color: var(--accent); }
+    .verify-ro-num.missing-text { color: var(--danger); }
+    .verify-vehicle { font-size: 0.75rem; color: var(--text); margin-top: 0.1rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .verify-service { font-size: 0.62rem; color: var(--text2); margin-top: 0.08rem; }
+    .verify-hrs { font-size: 1rem; font-weight: 700; font-family: var(--font-display); letter-spacing: 0.05em; flex-shrink: 0; }
+    .verify-hrs.confirmed { color: var(--success); }
+    .verify-hrs.missing { color: var(--danger); }
+    .verify-status-bar {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0.65rem 0.85rem;
+      background: var(--bg2); border: 1px solid var(--border);
+    }
+    .verify-progress {
+      height: 3px; background: var(--bg4); margin-top: 0.5rem; overflow: hidden;
+    }
+    .verify-progress-fill {
+      height: 100%; background: var(--success); transition: width 0.3s ease;
+    }
+    .missing-input-row {
+      display: flex; gap: 0.5rem; align-items: center;
+      padding: 0.5rem 0.85rem;
+      border: 1px dashed var(--danger); background: var(--danger-dim);
+      margin-top: 0.25rem;
+    }
+    .missing-ro-inp { flex: 1; }
+    .verify-section-label {
+      font-size: 0.58rem; letter-spacing: 0.18em; color: var(--text3);
+      text-transform: uppercase; padding: 0.5rem 0 0.25rem;
+    }
+
+    /* ── Completed RO styles ──────────────────────────────── */
+    .ro-complete-btn {
+      background: none; border: 2px solid var(--border2); color: var(--text3);
+      width: 22px; height: 22px; flex-shrink: 0; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.7rem; transition: all 0.15s; border-radius: 2px;
+    }
+    .ro-complete-btn:hover { border-color: var(--success); color: var(--success); }
+    .ro-complete-btn.completed { border-color: var(--success); background: var(--success-dim); color: var(--success); }
+    .ro-group.is-completed { opacity: 0.55; }
+    .ro-group.is-completed .ro-group-ro { text-decoration: line-through; color: var(--text3); }
+    .completed-section-toggle {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 0.85rem; background: var(--bg2); border: 1px solid var(--border);
+      cursor: pointer; transition: border-color 0.15s; min-height: 3rem;
+    }
+    .completed-section-toggle:hover { border-color: var(--border2); }
+    /* Move-to-period panel */
+    .ro-move-panel {
+      background: var(--bg4); border-top: 1px solid var(--border);
+      padding: 0.75rem 0.85rem; display: flex; flex-direction: column; gap: 0.5rem;
+      animation: fadeIn 0.15s ease both;
+    }
+
+    /* ── Settings ─────────────────────────────────────────── */
+    .settings-section { background: var(--bg2); border: 1px solid var(--border); padding: 1.1rem; display: flex; flex-direction: column; gap: 0.75rem; }
+    .settings-section-title { font-size: 0.6rem; letter-spacing: 0.18em; color: var(--text3); padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); }
+    .service-item { display: flex; gap: 0.4rem; align-items: center; animation: fadeIn 0.15s; }
+    .reorder-btn {
+      background: none; border: 1px solid var(--border); color: var(--text3);
+      font-family: var(--font-mono); font-size: 0.7rem; padding: 0.4rem 0.45rem;
+      cursor: pointer; flex-shrink: 0; transition: all 0.15s;
+    }
+    .reorder-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+    .reorder-btn:disabled { opacity: 0.2; cursor: default; }
+    .theme-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+    .theme-btn {
+      padding: 0.7rem 0.5rem; border: 1px solid var(--border); background: var(--bg3);
+      color: var(--text2); font-family: var(--font-mono); font-size: 0.65rem;
+      letter-spacing: 0.1em; cursor: pointer; transition: all 0.15s; text-transform: uppercase; text-align: center;
+    }
+    .theme-btn:hover { border-color: var(--border2); color: var(--text); }
+    .theme-btn.active { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); font-weight: 700; }
+
+    /* ── Toast ────────────────────────────────────────────── */
+    #toast {
+      position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%);
+      background: var(--success); color: #000;
+      font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700;
+      letter-spacing: 0.12em; padding: 0.6rem 1.25rem;
+      z-index: 9000; display: none; white-space: nowrap;
+      animation: toast-anim 0.2s ease;
+    }
+
+    /* ── Empty State ──────────────────────────────────────── */
+    .empty { text-align: center; padding: 3rem 1rem; color: var(--text3); font-size: 0.75rem; letter-spacing: 0.08em; }
+
+    /* ── Confirm Modal ────────────────────────────────────── */
+    #modal-overlay {
+      position: fixed; inset: 0; z-index: 10000;
+      background: rgba(0,0,0,0.72);
+      display: none; align-items: center; justify-content: center;
+      padding: 1.5rem;
+      backdrop-filter: blur(2px);
+    }
+    #modal-overlay.open { display: flex; }
+    #modal-box {
+      background: var(--bg2); border: 1px solid var(--border2);
+      width: 100%; max-width: 320px;
+      padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem;
+      animation: fadeIn 0.18s ease both;
+    }
+    #modal-title {
+      font-family: var(--font-mono); font-size: 0.65rem;
+      letter-spacing: 0.18em; color: var(--text3); text-transform: uppercase;
+    }
+    #modal-msg {
+      font-family: var(--font-mono); font-size: 0.82rem;
+      color: var(--text); line-height: 1.6;
+    }
+    #modal-actions { display: flex; gap: 0.5rem; }
+    #modal-actions button { flex: 1; justify-content: center; }
+
+    /* ── Export btn ───────────────────────────────────────── */
+    .export-row { display: flex; justify-content: flex-end; }
+
+    /* ── Responsive ───────────────────────────────────────── */
+    @media (max-width: 480px) {
+      .form-grid-3 { grid-template-columns: 1fr 1fr; }
+      .form-grid-3 .field:last-child { grid-column: span 2; }
+      .topbar-brand { font-size: 1.1rem; padding: 0 0.75rem; }
+      .entry-vehicle { max-width: 140px; }
+    }
+
+    /* ── Top bar: prevent overflow on narrow phones ──────────
+       Nav buttons no longer stretch (flex:1) and squeeze into
+       unreadable/wrapping text — instead the nav scrolls
+       horizontally while brand + user stay put. */
+    @media (max-width: 640px) {
+      .topbar-inner { max-width: 100%; }
+      #topbar { overflow: hidden; }
+      .topbar-brand { font-size: 1rem; padding: 0 0.65rem; letter-spacing: 0.06em; }
+      .topbar-nav {
+        flex: 1 1 auto;
+        min-width: 0;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+      }
+      .topbar-nav::-webkit-scrollbar { display: none; }
+      .nav-btn {
+        flex: 0 0 auto;
+        padding: 0.9rem 0.6rem;
+        font-size: 0.56rem;
+        letter-spacing: 0.09em;
+      }
+      .topbar-user { padding: 0 0.5rem; }
+    }
+    @media (max-width: 400px) {
+      .topbar-brand { padding: 0 0.5rem; font-size: 0.9rem; }
+      .nav-btn { padding: 0.9rem 0.5rem; font-size: 0.54rem; }
+    }
+
+    /* INVENTORY GRID */
+    .inv-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 0.75rem;
+    }
+
+    /* TILE — position:relative is critical so absolute children work */
+    .inv-tile {
+      position: relative;
+      border-radius: 4px;
+      overflow: hidden;
+      border: 1px solid var(--glass-border);
+      background: var(--glass-bg);
+      aspect-ratio: 3/4;
+      transition: box-shadow 0.2s, border-color 0.2s;
+    }
+    .inv-tile:hover { border-color: var(--glass-border-accent); }
+
+    /* IMAGE fills the entire tile as a background layer */
+    .inv-tile-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      background: var(--bg2);
+      transition: transform 0.3s ease;
+    }
+
+    /* FOOTER pinned to bottom, sits on top of image via z-index */
+    .inv-tile-footer {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 2;
+      padding: 0.45rem 0.5rem;
+      background: rgba(0,0,0,0.65);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.3rem;
+    }
+
+    .inv-tile-label {
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: #fff;
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .inv-tile-btn {
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 4px;
+      color: #fff;
+      font-size: 0.6rem;
+      padding: 0.2rem 0.35rem;
+      cursor: pointer;
+      flex-shrink: 0;
+      line-height: 1;
+      transition: background 0.15s;
+    }
+    .inv-tile-btn:hover { background: rgba(255,255,255,0.22); }
+
+    /* ADD TILE — dashed placeholder */
+    .inv-add-tile {
+      aspect-ratio: 3/4;
+      border: 2px dashed var(--border);
+      border-radius: 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      color: var(--text3);
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+      background: transparent;
+    }
+    .inv-add-tile:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+    .inv-add-icon { font-size: 2rem; line-height: 1; }
+    .inv-add-label { font-size: 0.6rem; letter-spacing: 0.1em; }
+
+    /* EMPTY placeholder when no photo yet */
+    .inv-empty-img {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      color: var(--text3);
+      background: var(--bg2);
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       LIQUID GLASS AESTHETIC — layered over all themes
+       Uses backdrop-filter blur + translucent fills + soft glow
+       ══════════════════════════════════════════════════════════ */
+
+    /* Glass utility variables injected into every theme */
+    :root,
+    [data-theme="stealth"],
+    [data-theme="carbon"],
+    [data-theme="ghost"],
+    [data-theme="nord"],
+    [data-theme="amber"],
+    [data-theme="synthwave"],
+    [data-theme="forest"],
+    [data-theme="slate"],
+    [data-theme="solar"] {
+      --glass-bg: rgba(255,255,255,0.04);
+      --glass-bg-strong: rgba(255,255,255,0.07);
+      --glass-border: rgba(255,255,255,0.10);
+      --glass-border-accent: rgba(255,255,255,0.18);
+      --glass-blur: blur(18px) saturate(160%);
+      --glass-blur-light: blur(10px) saturate(140%);
+      --glass-shadow: 0 4px 24px rgba(0,0,0,0.35), 0 1px 0 rgba(255,255,255,0.06) inset;
+      --glass-shadow-hover: 0 8px 32px rgba(0,0,0,0.45), 0 1px 0 rgba(255,255,255,0.10) inset;
+      --glass-glow: 0 0 0 1px var(--accent-dim), 0 0 20px var(--accent-dim);
+      --glass-radius: 2px;
+    }
+
+    /* Ghost (light) theme needs darker glass */
+    [data-theme="ghost"] {
+      --glass-bg: rgba(255,255,255,0.45);
+      --glass-bg-strong: rgba(255,255,255,0.60);
+      --glass-border: rgba(0,0,0,0.10);
+      --glass-border-accent: rgba(0,0,0,0.18);
+      --glass-shadow: 0 4px 24px rgba(0,0,0,0.10), 0 1px 0 rgba(255,255,255,0.9) inset;
+      --glass-shadow-hover: 0 8px 32px rgba(0,0,0,0.15), 0 1px 0 rgba(255,255,255,0.95) inset;
+    }
+
+    /* ── Body: ambient background blob for depth ── */
+    body {
+      position: relative;
+    }
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 20% 20%, var(--accent-dim) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 60% at 80% 80%, var(--accent-dim) 0%, transparent 70%);
+      pointer-events: none;
+      opacity: 0.6;
+    }
+    body > * { position: relative; z-index: 1; }
+
+    /* ── Top Bar: frosted ── */
+    #topbar {
+      background: var(--glass-bg-strong) !important;
+      backdrop-filter: var(--glass-blur) !important;
+      -webkit-backdrop-filter: var(--glass-blur) !important;
+      border-bottom: 1px solid var(--glass-border) !important;
+      box-shadow: 0 1px 0 var(--glass-border-accent), 0 4px 20px rgba(0,0,0,0.25) !important;
+    }
+    .topbar-brand {
+      border-right: 1px solid var(--glass-border) !important;
+      text-shadow: 0 0 20px var(--accent-dim), 0 0 40px var(--accent-dim);
+    }
+    .topbar-user {
+      border-left: 1px solid var(--glass-border) !important;
+    }
+    .nav-btn.active {
+      text-shadow: 0 0 12px var(--accent-dim);
+    }
+
+    /* ── Cards: glass panels ── */
+    .card,
+    .settings-section,
+    .period-header,
+    .verify-status-bar,
+    .hist-period,
+    .completed-section-toggle,
+    .totals-bar {
+      background: var(--glass-bg-strong) !important;
+      backdrop-filter: var(--glass-blur) !important;
+      -webkit-backdrop-filter: var(--glass-blur) !important;
+      border: 1px solid var(--glass-border) !important;
+      box-shadow: var(--glass-shadow) !important;
+      border-radius: var(--glass-radius);
+    }
+    .card:hover,
+    .hist-period:hover,
+    .completed-section-toggle:hover {
+      border-color: var(--glass-border-accent) !important;
+      box-shadow: var(--glass-shadow-hover) !important;
+    }
+
+    /* ── Entry rows: subtle glass ── */
+    .entry-row,
+    .ro-group,
+    .verify-ro-row {
+      background: var(--glass-bg) !important;
+      backdrop-filter: var(--glass-blur-light) !important;
+      -webkit-backdrop-filter: var(--glass-blur-light) !important;
+      border: 1px solid var(--glass-border) !important;
+      box-shadow: var(--glass-shadow) !important;
+      border-radius: var(--glass-radius);
+    }
+    .entry-row:hover,
+    .ro-group:hover {
+      border-color: var(--glass-border-accent) !important;
+      box-shadow: var(--glass-shadow-hover) !important;
+      background: var(--glass-bg-strong) !important;
+    }
+
+    /* Verified row state overrides stay readable */
+    .verify-ro-row.confirmed {
+      background: rgba(34,197,94,0.10) !important;
+      border-color: rgba(34,197,94,0.35) !important;
+    }
+    .verify-ro-row.missing {
+      background: rgba(239,68,68,0.10) !important;
+      border-color: rgba(239,68,68,0.35) !important;
+    }
+    [data-theme="nord"] .verify-ro-row.confirmed { background: rgba(163,190,140,0.12) !important; }
+    [data-theme="nord"] .verify-ro-row.missing { background: rgba(191,97,106,0.12) !important; }
+
+    /* ── Service lines inside RO group ── */
+    .ro-service-line {
+      background: rgba(255,255,255,0.025) !important;
+      border-bottom: 1px solid var(--glass-border) !important;
+    }
+    [data-theme="ghost"] .ro-service-line {
+      background: rgba(255,255,255,0.40) !important;
+    }
+
+    /* ── Edit & add-service panels ── */
+    .ro-edit-panel,
+    .ro-add-svc-panel,
+    .ro-move-panel {
+      background: var(--glass-bg-strong) !important;
+      backdrop-filter: var(--glass-blur-light) !important;
+      -webkit-backdrop-filter: var(--glass-blur-light) !important;
+      border-top: 1px solid var(--glass-border) !important;
+    }
+
+    /* ── RO group footer ── */
+    .ro-group-footer {
+      background: var(--glass-bg) !important;
+      border-top: 1px solid var(--glass-border) !important;
+    }
+
+    /* ── History body ── */
+    .hist-body {
+      background: var(--glass-bg) !important;
+    }
+    .hist-entry {
+      background: var(--glass-bg-strong) !important;
+      border: 1px solid var(--glass-border) !important;
+      backdrop-filter: var(--glass-blur-light) !important;
+      -webkit-backdrop-filter: var(--glass-blur-light) !important;
+      border-radius: var(--glass-radius);
+    }
+
+    /* ── Inputs: glass style ── */
+    .inp {
+      background: rgba(255,255,255,0.05) !important;
+      border: 1px solid var(--glass-border) !important;
+      backdrop-filter: var(--glass-blur-light) !important;
+      -webkit-backdrop-filter: var(--glass-blur-light) !important;
+      border-radius: var(--glass-radius);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2) inset !important;
+      transition: border-color 0.2s, box-shadow 0.2s !important;
+    }
+    .inp:focus {
+      border-color: var(--accent) !important;
+      box-shadow: 0 0 0 2px var(--accent-dim), 0 2px 8px rgba(0,0,0,0.2) inset !important;
+    }
+    [data-theme="ghost"] .inp {
+      background: rgba(255,255,255,0.55) !important;
+      border: 1px solid rgba(0,0,0,0.12) !important;
+    }
+    select.inp option {
+      background: var(--bg3) !important;
+    }
+
+    /* ── Buttons: glass refinement ── */
+    .btn {
+      border-radius: var(--glass-radius);
+      transition: opacity 0.15s, transform 0.1s, box-shadow 0.15s !important;
+    }
+    .btn-accent {
+      box-shadow: 0 0 12px var(--accent-dim), 0 2px 8px rgba(0,0,0,0.3) !important;
+    }
+    .btn-accent:hover {
+      box-shadow: 0 0 24px var(--accent-dim), 0 4px 16px rgba(0,0,0,0.4) !important;
+    }
+    .btn-ghost {
+      background: var(--glass-bg) !important;
+      backdrop-filter: var(--glass-blur-light) !important;
+      -webkit-backdrop-filter: var(--glass-blur-light) !important;
+      border: 1px solid var(--glass-border) !important;
+      box-shadow: var(--glass-shadow) !important;
+    }
+    .btn-ghost:hover {
+      background: var(--glass-bg-strong) !important;
+      border-color: var(--glass-border-accent) !important;
+      box-shadow: var(--glass-shadow-hover) !important;
+    }
+    .btn-danger {
+      background: var(--glass-bg) !important;
+      backdrop-filter: var(--glass-blur-light) !important;
+      -webkit-backdrop-filter: var(--glass-blur-light) !important;
+      border: 1px solid rgba(239,68,68,0.25) !important;
+    }
+    .btn-danger:hover {
+      background: rgba(239,68,68,0.10) !important;
+    }
+
+    /* Small inline buttons */
+    .del-btn,
+    .edit-btn,
+    .add-svc-btn,
+    .reorder-btn,
+    .ro-complete-btn,
+    .local-toggle {
+      border-radius: var(--glass-radius);
+    }
+    .del-btn,
+    .edit-btn,
+    .add-svc-btn,
+    .reorder-btn {
+      background: var(--glass-bg) !important;
+      border: 1px solid var(--glass-border) !important;
+      backdrop-filter: var(--glass-blur-light) !important;
+      -webkit-backdrop-filter: var(--glass-blur-light) !important;
+    }
+    .del-btn:hover { background: rgba(239,68,68,0.12) !important; border-color: rgba(239,68,68,0.4) !important; }
+    .edit-btn:hover { background: var(--accent-dim) !important; border-color: var(--accent) !important; }
+    .add-svc-btn:hover { background: var(--accent-dim) !important; border-color: var(--accent) !important; }
+    .reorder-btn:hover:not(:disabled) { background: var(--accent-dim) !important; }
+
+    /* Verify checkboxes */
+    .verify-check {
+      background: var(--glass-bg) !important;
+      border: 2px solid var(--glass-border-accent) !important;
+      backdrop-filter: var(--glass-blur-light) !important;
+      -webkit-backdrop-filter: var(--glass-blur-light) !important;
+      border-radius: var(--glass-radius);
+    }
+    .verify-check.checked {
+      background: rgba(34,197,94,0.15) !important;
+      border-color: var(--success) !important;
+      box-shadow: 0 0 8px rgba(34,197,94,0.3) !important;
+    }
+    .verify-check.marked-missing {
+      background: rgba(239,68,68,0.15) !important;
+      box-shadow: 0 0 8px rgba(239,68,68,0.3) !important;
+    }
+
+    /* ── Theme switcher buttons ── */
+    .theme-btn {
+      background: var(--glass-bg) !important;
+      border: 1px solid var(--glass-border) !important;
+      backdrop-filter: var(--glass-blur-light) !important;
+      -webkit-backdrop-filter: var(--glass-blur-light) !important;
+      border-radius: var(--glass-radius);
+      box-shadow: var(--glass-shadow) !important;
+      transition: all 0.15s !important;
+    }
+    .theme-btn:hover {
+      background: var(--glass-bg-strong) !important;
+      border-color: var(--glass-border-accent) !important;
+    }
+    .theme-btn.active {
+      background: var(--accent-dim) !important;
+      border-color: var(--accent) !important;
+      box-shadow: 0 0 12px var(--accent-dim), var(--glass-shadow) !important;
+    }
+
+    /* ── Sign-in page: glass card ── */
+    .signin-box {
+      background: var(--glass-bg-strong) !important;
+      backdrop-filter: var(--glass-blur) !important;
+      -webkit-backdrop-filter: var(--glass-blur) !important;
+      border: 1px solid var(--glass-border) !important;
+      box-shadow: var(--glass-shadow-hover), 0 0 60px var(--accent-dim) !important;
+      border-radius: var(--glass-radius);
+    }
+    .signin-logo .wordmark {
+      text-shadow: 0 0 30px var(--accent-dim), 0 0 60px var(--accent-dim);
+    }
+
+    /* ── Avatar glass ring ── */
+    .avatar {
+      background: var(--glass-bg-strong) !important;
+      box-shadow: 0 0 0 1px var(--glass-border), 0 0 12px var(--accent-dim) !important;
+    }
+    .avatar:hover, .avatar.open {
+      box-shadow: 0 0 0 3px var(--accent-dim), 0 0 20px var(--accent-dim) !important;
+    }
+
+    /* ── Dropdown user menu: glass ── */
+    #user-menu {
+      background: var(--glass-bg-strong) !important;
+      backdrop-filter: var(--glass-blur) !important;
+      -webkit-backdrop-filter: var(--glass-blur) !important;
+      border: 1px solid var(--glass-border) !important;
+      box-shadow: 0 16px 48px rgba(0,0,0,0.5), 0 1px 0 var(--glass-border-accent) inset !important;
+      border-radius: var(--glass-radius);
+    }
+    .user-menu-header {
+      border-bottom: 1px solid var(--glass-border) !important;
+    }
+    .user-menu-item {
+      border-top: 1px solid var(--glass-border) !important;
+    }
+    .user-menu-item:hover {
+      background: var(--glass-bg-strong) !important;
+    }
+    .user-menu-item.danger:hover {
+      background: rgba(239,68,68,0.12) !important;
+    }
+
+    /* ── Modal: glass overlay ── */
+    #modal-overlay {
+      background: rgba(0,0,0,0.60) !important;
+      backdrop-filter: blur(8px) !important;
+      -webkit-backdrop-filter: blur(8px) !important;
+    }
+    #modal-box {
+      background: var(--glass-bg-strong) !important;
+      backdrop-filter: var(--glass-blur) !important;
+      -webkit-backdrop-filter: var(--glass-blur) !important;
+      border: 1px solid var(--glass-border-accent) !important;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.6), 0 1px 0 var(--glass-border-accent) inset !important;
+      border-radius: var(--glass-radius);
+    }
+
+    /* ── Toast: glass pill ── */
+    #toast {
+      backdrop-filter: var(--glass-blur-light) !important;
+      -webkit-backdrop-filter: var(--glass-blur-light) !important;
+      border-radius: 999px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.4), 0 0 16px rgba(34,197,94,0.3) !important;
+    }
+
+    /* ── Totals bar accent glow ── */
+    .totals-bar {
+      box-shadow: 0 0 0 1px var(--accent-dim), var(--glass-shadow) !important;
+    }
+
+    /* ── Verify progress bar: glass track ── */
+    .verify-progress {
+      background: var(--glass-bg-strong) !important;
+      border: 1px solid var(--glass-border) !important;
+      border-radius: 999px !important;
+      overflow: hidden !important;
+    }
+    .verify-progress-fill {
+      box-shadow: 0 0 12px rgba(34,197,94,0.5) !important;
+      border-radius: 999px !important;
+    }
+
+    /* ── Missing input row ── */
+    .missing-input-row {
+      background: rgba(239,68,68,0.08) !important;
+      border: 1px dashed rgba(239,68,68,0.4) !important;
+      backdrop-filter: var(--glass-blur-light) !important;
+      -webkit-backdrop-filter: var(--glass-blur-light) !important;
+      border-radius: var(--glass-radius);
+    }
+
+    /* ── Completed RO muted glass ── */
+    .ro-group.is-completed {
+      opacity: 0.45 !important;
+      filter: saturate(0.5);
+    }
+
+    /* ── Subtle inner shimmer on glass panels (top highlight) ── */
+    .card::after,
+    .signin-box::after,
+    #modal-box::after,
+    #user-menu::after,
+    #topbar::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .card, .signin-box, #modal-box, #user-menu, #topbar { position: relative; }
+    .card > *, .signin-box > *, #modal-box > *, #user-menu > *, #topbar > * { position: relative; z-index: 1; }
+
+    /* ── Scrollbar refined ── */
+    ::-webkit-scrollbar-thumb {
+      background: var(--glass-border-accent);
+      border-radius: 999px;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 480px) {
+      #topbar {
+        backdrop-filter: var(--glass-blur-light) !important;
+        -webkit-backdrop-filter: var(--glass-blur-light) !important;
+      }
+    }
+
+    /* ── Custom Date Picker ───────────────────────────────── */
+
+    /* The trigger button — identical glass treatment as .inp */
+    .date-picker-btn {
+      background: rgba(255,255,255,0.05) !important;
+      border: 1px solid var(--glass-border) !important;
+      backdrop-filter: var(--glass-blur-light) !important;
+      -webkit-backdrop-filter: var(--glass-blur-light) !important;
+      border-radius: var(--glass-radius);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2) inset !important;
+      color: var(--text);
+      padding: 0.65rem 0.85rem;
+      font-family: var(--font-mono); font-size: 0.85rem;
+      outline: none; width: 100%;
+      cursor: pointer; text-align: left; display: flex;
+      align-items: center; justify-content: space-between; gap: 0.5rem;
+      transition: border-color 0.2s, box-shadow 0.2s !important;
+    }
+    [data-theme="ghost"] .date-picker-btn {
+      background: rgba(255,255,255,0.55) !important;
+      border: 1px solid rgba(0,0,0,0.12) !important;
+    }
+    .date-picker-btn:focus,
+    .date-picker-btn.open {
+      border-color: var(--accent) !important;
+      box-shadow: 0 0 0 2px var(--accent-dim), 0 2px 8px rgba(0,0,0,0.2) inset !important;
+    }
+    .date-picker-btn .dp-icon {
+      color: var(--text3); font-size: 0.72rem; flex-shrink: 0;
+      transition: color 0.15s;
+    }
+    .date-picker-btn.open .dp-icon,
+    .date-picker-btn:focus .dp-icon { color: var(--accent); }
+    .date-picker-btn .dp-text { flex: 1; letter-spacing: 0.04em; }
+
+    /* Overlay backdrop — transparent, just catches outside taps */
+    #dp-overlay {
+      position: fixed; inset: 0; z-index: 10500;
+      display: none;
+    }
+    #dp-overlay.open { display: block; }
+
+    /* Calendar popup — same glass card recipe as #modal-box / #user-menu */
+    #dp-popup {
+      position: fixed; z-index: 10501;
+      background: var(--glass-bg-strong) !important;
+      backdrop-filter: var(--glass-blur) !important;
+      -webkit-backdrop-filter: var(--glass-blur) !important;
+      border: 1px solid var(--glass-border-accent) !important;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.6), 0 1px 0 var(--glass-border-accent) inset !important;
+      border-radius: var(--glass-radius);
+      padding: 0.9rem;
+      width: 272px;
+      display: none;
+      animation: fadeIn 0.15s ease both;
+      user-select: none;
+    }
+    /* Top shimmer line — matches .card::after pattern */
+    #dp-popup::before {
+      content: '';
+      position: absolute; inset: 0;
+      border-radius: inherit;
+      background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 45%);
+      pointer-events: none; z-index: 0;
+    }
+    #dp-popup > * { position: relative; z-index: 1; }
+    #dp-popup.open { display: block; }
+
+    /* Header row: nav arrows + month/year label */
+    .dp-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 0.65rem; gap: 0.4rem;
+    }
+    .dp-nav-btn {
+      background: rgba(255,255,255,0.05) !important;
+      border: 1px solid var(--glass-border) !important;
+      backdrop-filter: var(--glass-blur-light) !important;
+      -webkit-backdrop-filter: var(--glass-blur-light) !important;
+      box-shadow: var(--glass-shadow) !important;
+      color: var(--text2); font-family: var(--font-mono); font-size: 0.6rem;
+      padding: 0.32rem 0.55rem; cursor: pointer; border-radius: var(--glass-radius);
+      transition: all 0.12s; line-height: 1; flex-shrink: 0;
+    }
+    .dp-nav-btn:hover {
+      border-color: var(--accent) !important; color: var(--accent);
+      background: var(--accent-dim) !important;
+      box-shadow: 0 0 8px var(--accent-dim), var(--glass-shadow) !important;
+    }
+    .dp-month-label {
+      font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700;
+      letter-spacing: 0.16em; color: var(--accent); text-transform: uppercase;
+      cursor: pointer; flex: 1; text-align: center;
+      text-shadow: 0 0 12px var(--accent-dim);
+      transition: opacity 0.12s;
+    }
+    .dp-month-label:hover { opacity: 0.75; }
+
+    /* Weekday labels */
+    .dp-weekdays {
+      display: grid; grid-template-columns: repeat(7, 1fr);
+      gap: 2px; margin-bottom: 4px;
+      border-bottom: 1px solid var(--glass-border);
+      padding-bottom: 5px;
+    }
+    .dp-weekday {
+      text-align: center; font-size: 0.5rem; letter-spacing: 0.14em;
+      color: var(--text3); padding: 0.1rem 0; font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    /* Day grid */
+    .dp-days {
+      display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px;
+    }
+    .dp-day {
+      aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-mono); font-size: 0.68rem; cursor: pointer;
+      border-radius: var(--glass-radius); transition: all 0.1s; color: var(--text);
+      border: 1px solid transparent;
+    }
+    .dp-day:hover:not(.dp-day-empty):not(.dp-day-selected) {
+      background: var(--glass-bg-strong) !important;
+      border-color: var(--glass-border-accent) !important;
+      color: var(--accent);
+      box-shadow: 0 0 6px var(--accent-dim);
+    }
+    .dp-day-empty { cursor: default; pointer-events: none; }
+    .dp-day-today {
+      color: var(--accent); font-weight: 700;
+      border-color: var(--glass-border-accent) !important;
+      background: var(--accent-dim) !important;
+    }
+    .dp-day-selected {
+      background: var(--accent) !important;
+      color: var(--accent-text) !important;
+      border-color: var(--accent) !important;
+      font-weight: 700;
+      box-shadow: 0 0 12px var(--accent-dim) !important;
+    }
+    /* selected overrides today */
+    .dp-day-today.dp-day-selected {
+      background: var(--accent) !important;
+      box-shadow: 0 0 16px var(--accent-dim) !important;
+    }
+
+    /* Month picker grid (shown when tapping month label) */
+    .dp-month-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px;
+    }
+    .dp-month-item {
+      padding: 0.42rem 0.15rem; text-align: center;
+      font-family: var(--font-mono); font-size: 0.6rem; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--glass-border); border-radius: var(--glass-radius);
+      color: var(--text2); transition: all 0.1s;
+    }
+    .dp-month-item:hover {
+      border-color: var(--accent) !important; color: var(--accent);
+      background: var(--accent-dim) !important;
+      box-shadow: 0 0 8px var(--accent-dim);
+    }
+    .dp-month-item.active {
+      background: var(--accent) !important; color: var(--accent-text);
+      border-color: var(--accent) !important;
+      box-shadow: 0 0 12px var(--accent-dim);
+    }
+
+    /* Year navigator row */
+    .dp-year-row {
+      display: flex; align-items: center; justify-content: space-between; gap: 0.4rem;
+      margin-top: 0.6rem; padding-top: 0.6rem;
+      border-top: 1px solid var(--glass-border);
+    }
+    .dp-year-label {
+      font-family: var(--font-mono); font-size: 0.78rem; font-weight: 700;
+      color: var(--accent); letter-spacing: 0.12em;
+      text-shadow: 0 0 12px var(--accent-dim);
+    }
+
+    /* Footer bar */
+    .dp-footer {
+      display: flex; gap: 0.4rem;
+      margin-top: 0.65rem; padding-top: 0.65rem;
+      border-top: 1px solid var(--glass-border);
+    }
+    .dp-today-btn, .dp-clear-btn {
+      flex: 1; padding: 0.42rem; text-align: center;
+      font-family: var(--font-mono); font-size: 0.58rem; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer;
+      border-radius: var(--glass-radius); transition: all 0.12s;
+    }
+    .dp-today-btn {
+      background: var(--accent-dim) !important;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      box-shadow: 0 0 8px var(--accent-dim);
+    }
+    .dp-today-btn:hover {
+      background: var(--accent) !important; color: var(--accent-text);
+      box-shadow: 0 0 16px var(--accent-dim) !important;
+    }
+    .dp-clear-btn {
+      background: rgba(255,255,255,0.04) !important;
+      border: 1px solid var(--glass-border);
+      color: var(--text3);
+    }
+    .dp-clear-btn:hover {
+      border-color: var(--glass-border-accent) !important;
+      color: var(--text2);
+      background: var(--glass-bg-strong) !important;
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       LIQUID GLASS — ROUNDED / iOS MODE
+       Activated by: body[data-glass="rounded"]
+       ══════════════════════════════════════════════════════════ */
+    body[data-glass="rounded"] {
+      --glass-radius: 16px;
+      --glass-radius-sm: 10px;
+      --glass-radius-pill: 999px;
+      --glass-blur: blur(28px) saturate(180%) brightness(1.05);
+      --glass-blur-light: blur(16px) saturate(160%);
+      --glass-bg: rgba(255,255,255,0.06);
+      --glass-bg-strong: rgba(255,255,255,0.10);
+      --glass-border: rgba(255,255,255,0.14);
+      --glass-border-accent: rgba(255,255,255,0.24);
+      --glass-shadow: 0 8px 32px rgba(0,0,0,0.30), 0 1px 0 rgba(255,255,255,0.10) inset, 0 -1px 0 rgba(0,0,0,0.15) inset;
+      --glass-shadow-hover: 0 16px 48px rgba(0,0,0,0.40), 0 1px 0 rgba(255,255,255,0.14) inset;
+    }
+    body[data-glass="rounded"][data-theme="ghost"] {
+      --glass-bg: rgba(255,255,255,0.52);
+      --glass-bg-strong: rgba(255,255,255,0.68);
+      --glass-border: rgba(0,0,0,0.09);
+      --glass-border-accent: rgba(0,0,0,0.16);
+      --glass-shadow: 0 8px 32px rgba(0,0,0,0.10), 0 1px 0 rgba(255,255,255,0.95) inset;
+    }
+    body[data-glass="rounded"] .card,
+    body[data-glass="rounded"] .settings-section,
+    body[data-glass="rounded"] .period-header,
+    body[data-glass="rounded"] .verify-status-bar,
+    body[data-glass="rounded"] .totals-bar { border-radius: 16px !important; }
+    body[data-glass="rounded"] .entry-row,
+    body[data-glass="rounded"] .ro-group,
+    body[data-glass="rounded"] .verify-ro-group,
+    body[data-glass="rounded"] .hist-entry { border-radius: 16px !important; }
+    body[data-glass="rounded"] .ro-group { overflow: hidden; }
+    body[data-glass="rounded"] .ro-group-header { border-radius: 16px 16px 0 0 !important; }
+    body[data-glass="rounded"] .ro-group-footer,
+    body[data-glass="rounded"] .ro-edit-panel,
+    body[data-glass="rounded"] .ro-add-svc-panel,
+    body[data-glass="rounded"] .ro-move-panel { border-radius: 0 0 16px 16px !important; }
+    body[data-glass="rounded"] .verify-ro-group { overflow: hidden; }
+    body[data-glass="rounded"] .verify-ro-header-row { border-radius: 16px 16px 0 0 !important; }
+    body[data-glass="rounded"] .verify-ro-row:not(.verify-ro-header-row):not(.verify-service-line) { border-radius: 16px !important; }
+    body[data-glass="rounded"] .verify-service-line { border-radius: 0 !important; }
+    body[data-glass="rounded"] .inp,
+    body[data-glass="rounded"] .date-picker-btn { border-radius: 10px !important; }
+    body[data-glass="rounded"] textarea.inp { border-radius: 10px !important; }
+    body[data-glass="rounded"] .btn { border-radius: 999px !important; }
+    body[data-glass="rounded"] .btn-accent {
+      box-shadow: 0 0 20px var(--accent-dim), 0 4px 16px rgba(0,0,0,0.3), 0 1px 0 rgba(255,255,255,0.2) inset !important;
+    }
+    body[data-glass="rounded"] .btn-accent:hover {
+      box-shadow: 0 0 36px var(--accent-dim), 0 8px 28px rgba(0,0,0,0.4), 0 1px 0 rgba(255,255,255,0.25) inset !important;
+      transform: scale(1.02) !important;
+    }
+    body[data-glass="rounded"] .del-btn,
+    body[data-glass="rounded"] .edit-btn,
+    body[data-glass="rounded"] .add-svc-btn,
+    body[data-glass="rounded"] .reorder-btn,
+    body[data-glass="rounded"] .ro-complete-btn,
+    body[data-glass="rounded"] .local-toggle,
+    body[data-glass="rounded"] .theme-btn { border-radius: 10px !important; }
+    body[data-glass="rounded"] #topbar {
+      background: rgba(255,255,255,0.06) !important;
+      backdrop-filter: blur(32px) saturate(200%) !important;
+      -webkit-backdrop-filter: blur(32px) saturate(200%) !important;
+    }
+    body[data-glass="rounded"] #user-menu { border-radius: 16px !important; overflow: hidden; }
+    body[data-glass="rounded"] #modal-box { border-radius: 16px !important; }
+    body[data-glass="rounded"] .signin-box { border-radius: 16px !important; }
+    body[data-glass="rounded"] #dp-popup { border-radius: 16px !important; }
+    body[data-glass="rounded"] .dp-day,
+    body[data-glass="rounded"] .dp-month-item,
+    body[data-glass="rounded"] .dp-nav-btn,
+    body[data-glass="rounded"] .dp-today-btn,
+    body[data-glass="rounded"] .dp-clear-btn { border-radius: 10px !important; }
+    body[data-glass="rounded"] #toast { border-radius: 999px !important; }
+    body[data-glass="rounded"] .nav-btn {
+      border-radius: 10px !important;
+      margin: 0.35rem 0.2rem;
+      border-bottom: 2px solid transparent !important;
+    }
+    body[data-glass="rounded"] .nav-btn.active {
+      background: var(--accent-dim) !important;
+      border-bottom-color: transparent !important;
+      color: var(--accent);
+    }
+    body[data-glass="rounded"] .nav-btn:hover:not(.active) { background: var(--glass-bg) !important; }
+    body[data-glass="rounded"] .btn:active,
+    body[data-glass="rounded"] .del-btn:active,
+    body[data-glass="rounded"] .edit-btn:active,
+    body[data-glass="rounded"] .theme-btn:active,
+    body[data-glass="rounded"] .nav-btn:active {
+      transform: scale(0.94) !important;
+      transition: transform 0.08s cubic-bezier(0.34,1.56,0.64,1) !important;
+    }
+    body[data-glass="rounded"] .hist-period { border-radius: 16px !important; overflow: hidden; }
+    body[data-glass="rounded"] .hist-entry { border-radius: 10px !important; }
+  </style>
+</head>
+<body data-theme="terminal">
+
+<div id="toast"></div>
+
+<!-- Custom Date Picker -->
+<div id="dp-overlay" onclick="DP.close()"></div>
+<div id="dp-popup">
+  <div class="dp-header">
+    <button class="dp-nav-btn" id="dp-prev">&#9664;</button>
+    <span class="dp-month-label" id="dp-month-label" onclick="DP.toggleMonthView()"></span>
+    <button class="dp-nav-btn" id="dp-next">&#9654;</button>
+  </div>
+  <div id="dp-calendar-view">
+    <div class="dp-weekdays">
+      <div class="dp-weekday">SU</div><div class="dp-weekday">MO</div><div class="dp-weekday">TU</div>
+      <div class="dp-weekday">WE</div><div class="dp-weekday">TH</div><div class="dp-weekday">FR</div>
+      <div class="dp-weekday">SA</div>
+    </div>
+    <div class="dp-days" id="dp-days"></div>
+  </div>
+  <div id="dp-month-view" style="display:none">
+    <div class="dp-month-grid" id="dp-month-grid"></div>
+    <div class="dp-year-row">
+      <button class="dp-nav-btn" id="dp-year-prev">&#9664;</button>
+      <span class="dp-year-label" id="dp-year-label"></span>
+      <button class="dp-nav-btn" id="dp-year-next">&#9654;</button>
+    </div>
+  </div>
+  <div class="dp-footer">
+    <div class="dp-today-btn" id="dp-today-btn">TODAY</div>
+    <div class="dp-clear-btn" id="dp-clear-btn">CLOSE</div>
+  </div>
+</div>
+
+<!-- Custom confirm modal (replaces browser confirm() for mobile compatibility) -->
+<div id="modal-overlay">
+  <div id="modal-box">
+    <div id="modal-title">CONFIRM ACTION</div>
+    <div id="modal-msg"></div>
+    <div id="modal-actions">
+      <button class="btn btn-ghost" id="modal-cancel">CANCEL</button>
+      <button class="btn btn-danger" id="modal-confirm">CONFIRM</button>
+    </div>
+  </div>
+</div>
+
+<!-- Persistent file input — lives outside renderInventory -->
+<input type="file" id="inv-replace-input" accept="image/*" style="display:none" />
+
+<!-- Add box label modal -->
+<div id="inv-modal-overlay" style="display:none;position:fixed;inset:0;z-index:900;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:1.5rem">
+  <div id="inv-modal-box" style="background:var(--bg);border:1px solid var(--glass-border);border-radius:4px;padding:1.5rem;width:100%;max-width:340px;display:flex;flex-direction:column;gap:1rem;box-shadow:var(--glass-shadow)">
+    <div style="font-size:0.7rem;font-weight:700;letter-spacing:0.15em;color:var(--accent)">ADD BOX</div>
+    <input id="inv-label-inp" class="inp" type="text" placeholder='e.g. "Roll #4 — 1.52m Gloss"' autocomplete="off" style="font-size:0.9rem" />
+    <div style="display:flex;gap:0.5rem">
+      <button class="btn btn-ghost" onclick="invModalCancel()" style="flex:1;justify-content:center">CANCEL</button>
+      <button class="btn btn-accent" onclick="invModalConfirm()" style="flex:1;justify-content:center">NEXT: PHOTO</button>
+    </div>
+  </div>
+</div>
+
+<!-- Lightbox -->
+<div id="inv-lightbox" onclick="invCloseLightbox()" style="display:none;position:fixed;inset:0;z-index:950;background:rgba(0,0,0,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);align-items:center;justify-content:center;padding:1rem;cursor:zoom-out">
+  <img id="inv-lightbox-img" src="" alt="" onclick="event.stopPropagation()" style="max-width:100%;max-height:90dvh;object-fit:contain;border-radius:8px;box-shadow:0 24px 64px rgba(0,0,0,0.6);cursor:default" />
+  <div id="inv-lightbox-label" style="position:absolute;bottom:1.5rem;left:0;right:0;text-align:center;color:#fff;font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-shadow:0 1px 4px rgba(0,0,0,0.8);pointer-events:none"></div>
+</div>
+
+<div id="signin-page">
+  <div class="signin-logo">
+    <div class="wordmark">FLAG//HOURS</div>
+    <div class="sub">PPF &amp; TINT SHOP TRACKER</div>
+  </div>
+
+  <div class="signin-box fade-in">
+    <div class="label" style="margin-bottom:0.1rem; text-align:center; letter-spacing:0.2em">SIGN IN TO CONTINUE</div>
+
+    <!-- Cloud (Supabase) email/password auth -->
+    <div class="field">
+      <label class="label">EMAIL</label>
+      <input id="cloud-email-input" class="inp" type="email" placeholder="you@shop.com" autocomplete="username" style="font-size:1rem;padding:1rem" />
+    </div>
+    <div class="field">
+      <label class="label">PASSWORD</label>
+      <input id="cloud-password-input" class="inp" type="password" placeholder="••••••••" autocomplete="current-password" style="font-size:1rem;padding:1rem" />
+    </div>
+    <div style="display:flex;gap:0.5rem">
+      <button class="btn btn-accent" id="cloud-signin-btn" style="flex:1;justify-content:center;padding:1rem" onclick="emailSignIn()">SIGN IN</button>
+      <button class="btn btn-ghost" id="cloud-signup-btn" style="flex:1;justify-content:center;padding:1rem" onclick="emailSignUp()">CREATE ACCOUNT</button>
+    </div>
+
+    <div class="signin-divider"><span>OR USE LOCAL</span></div>
+
+    <!-- Local login toggle -->
+    <button class="local-toggle" id="local-toggle-btn" onclick="toggleLocalPanel()">▼ LOCAL NAME LOGIN</button>
+
+    <div class="local-panel" id="local-panel" style="display:none">
+      <div class="field">
+        <label class="label">TECHNICIAN NAME</label>
+        <input id="demo-name-input" class="inp" type="text" placeholder="e.g. John" autocomplete="off" style="font-size: 1rem; padding: 1rem;" />
+      </div>
+      <button class="btn btn-accent" id="local-login-btn" style="width:100%;justify-content:center; padding: 1rem;" onclick="localLogin()">
+        ACCESS TERMINAL →
+      </button>
+    </div>
+
+    <div class="signin-note">
+      <strong style="color:var(--text2)">Email sign-in</strong> gives you real-time cloud backup and cross-device access — stay signed in, no repeated logins. <strong style="color:var(--text2)">Local login</strong> stores data offline in your browser under your name — use the same name each time to retrieve records.
+    </div>
+  </div>
+</div>
+
+<div id="app" style="display:none">
+
+  <div id="topbar">
+  <div class="topbar-inner">
+    <div class="topbar-brand">FLAG//HOURS</div>
+    <nav class="topbar-nav">
+      <button class="nav-btn active" data-page="log" onclick="switchPage('log')">LOG</button>
+      <button class="nav-btn" data-page="history" onclick="switchPage('history')">HISTORY</button>
+      <button class="nav-btn" data-page="verify" onclick="switchPage('verify')">VERIFY</button>
+      <button class="nav-btn" data-page="inventory" onclick="switchPage('inventory')">INVENTORY</button>
+      <button class="nav-btn" data-page="settings" onclick="switchPage('settings')">SETTINGS</button>
+    </nav>
+    <div class="topbar-user">
+      <div id="drive-sync-indicator" class="drive-sync-indicator" style="display:none">
+        <div class="drive-sync-dot" id="drive-sync-dot"></div>
+      </div>
+      <div class="avatar" id="user-avatar" onclick="toggleUserMenu()" role="button" aria-label="User menu"></div>
+      <!-- Backdrop -->
+      <div id="user-menu-backdrop" onclick="closeUserMenu()"></div>
+      <!-- Dropdown -->
+      <div id="user-menu">
+        <div class="user-menu-header">
+          <div class="user-menu-name" id="user-menu-name"></div>
+          <div class="user-menu-sub" id="user-menu-sub"></div>
+        </div>
+        <button class="user-menu-item" onclick="closeUserMenu(); switchPage('settings')">⚙ SETTINGS</button>
+        <button class="user-menu-item" id="user-menu-sync-btn" style="display:none" onclick="closeUserMenu(); syncNow()">↑ SYNC NOW</button>
+        <button class="user-menu-item danger" onclick="closeUserMenu(); signOut()">⏻ SIGN OUT</button>
+      </div>
+    </div>
+  </div><!-- /.topbar-inner -->
+  </div><!-- /#topbar -->
+
+  <div id="page-log" class="page"></div>
+  <div id="page-history" class="page" style="display:none"></div>
+  <div id="page-verify" class="page" style="display:none"></div>
+  <div id="page-inventory" class="page" style="display:none"></div>
+  <div id="page-settings" class="page" style="display:none"></div>
+
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// CONSTANTS
+// ═══════════════════════════════════════════════════════════
+const DEFAULT_SERVICES = [
+  'Prep','Polish','PPF','Windshield PPF',
+  'Ceramic Coating','Vinyl','Vinyl Removal',
+  'PPF Removal','Lux Tint','Parts Removal'
+];
+const DEFAULT_ANCHOR = '2026-05-18';
+const THEMES = ['terminal','stealth','carbon','ghost','nord','amber','synthwave','forest','slate','solar'];
+const THEME_LABELS = {
+  terminal:'Terminal', stealth:'Stealth', carbon:'Carbon', ghost:'Ghost',
+  nord:'Nord', amber:'Amber', synthwave:'Synthwave', forest:'Forest', slate:'Slate', solar:'Solar'
+};
+
+
+// ═══════════════════════════════════════════════════════════
+// TRANSLATIONS
+// ═══════════════════════════════════════════════════════════
+const LANG = {
+  en: {
+    // Nav
+    nav_log: 'LOG', nav_history: 'HISTORY', nav_verify: 'VERIFY', nav_settings: 'SETTINGS', nav_out: 'OUT',
+    // Log page
+    current_pay_period: 'CURRENT PAY PERIOD', active_hrs: 'ACTIVE HRS',
+    new_entry: 'NEW ENTRY', ro_num: 'RO#', date: 'DATE', vehicle_info: 'VEHICLE INFO',
+    service: 'SERVICE', hours_paid: 'HOURS PAID', btn_log: '+ LOG',
+    export_period_csv: '↓ EXPORT PERIOD CSV',
+    active_ros: 'ACTIVE ROs — tap ✓ to mark complete',
+    completed_ros: '✓ COMPLETED ROs', hide: '▲ HIDE', show: '▼ SHOW',
+    period_total: 'PERIOD TOTAL', hrs: 'HRS', no_active: 'NO ACTIVE ROs', no_completed: 'NO COMPLETED ROs',
+    // RO group
+    subtotal: 'SUBTOTAL', add_service: '+ ADD SVC', move_period: '⇄ MOVE PERIOD', mark_incomplete: 'UNDO',
+    move_ro_to: 'MOVE #', to_period: 'TO PERIOD', target_period: 'TARGET PAY PERIOD',
+    btn_move: 'MOVE', btn_cancel: 'CANCEL', no_other_periods: 'No other periods available',
+    // History page
+    all_history: 'ALL HISTORY', filter_period: 'FILTER BY PERIOD', all_periods: 'All Periods',
+    no_history: 'NO ENTRIES YET', no_matching: 'NO ENTRIES FOR THIS PERIOD',
+    // Verify page
+    verify_title: 'VERIFY PAY', select_period: 'SELECT PAY PERIOD', choose_period: 'Choose a period…',
+    btn_load: 'LOAD', btn_export_csv: '↓ EXPORT CSV',
+    verified_hrs: 'VERIFIED HRS', discrepancy: 'DISCREPANCY',
+    no_entries_period: 'No entries for this period.',
+    // Settings
+    service_list: 'SERVICE LIST', btn_add_service: '+ ADD SERVICE', btn_save_list: 'SAVE LIST',
+    theme: 'THEME', language: 'LANGUAGE',
+    data_management: 'DATA MANAGEMENT', signed_in_as: 'Signed in as',
+    data_desc: 'Data is locally isolated to your user name. Tap Backup to share/save your data.',
+    btn_backup: '↓ BACKUP DATA', btn_import: '↑ IMPORT BACKUP (JSON)', btn_clear: '⚠ CLEAR ALL DATA',
+    anchor_section: 'PAY PERIOD ANCHOR', anchor_label: 'ANCHOR START DATE',
+    anchor_desc: 'All pay periods calculate from this date in 14-day windows. Set once and forget it.',
+    btn_save_anchor: 'SAVE ANCHOR DATE',
+    pay_rate_section: 'PAY RATE', hourly_rate_label: 'FLAG RATE ($/HR)', withholding_label: 'WITHHOLDING (%)',
+    pay_rate_desc: 'Used to estimate gross and net pay on the Log page. Withholding covers taxes and other deductions.',
+    btn_save_rate: 'SAVE RATE', gross_pay: 'GROSS', net_pay: 'NET',
+    // Toasts
+    toast_name_required: 'Enter your name first',
+    toast_ro_required: 'RO# required', toast_vehicle_required: 'Vehicle required', toast_hours_required: 'Valid hours required',
+    toast_logged: 'Entry logged', toast_updated: 'Entry updated', toast_deleted: 'Entry deleted',
+    toast_svc_added: 'Service line added', toast_moved: 'RO moved to', toast_no_entries: 'No entries found',
+    toast_select_period: 'Select a period',
+    toast_anchor_saved: 'Anchor date saved', toast_anchor_required: 'Select a date',
+    toast_services_saved: 'Services saved', toast_min_service: 'Add at least one service',
+    toast_need_service: 'Need at least one service',
+    toast_theme_applied: 'theme applied',
+    toast_cleared: 'All data cleared',
+    toast_backup_shared: 'Backup shared', toast_backup_tap: 'Tap Share → Save to Files', toast_backup_exported: 'Backup exported',
+    toast_imported: 'Backup imported successfully', toast_import_error: 'Error importing file format',
+    toast_csv_exported: 'CSV exported',
+    toast_rate_saved: 'Pay rate saved', toast_rate_invalid: 'Enter a valid hourly rate', toast_withholding_invalid: 'Enter a withholding percent between 0–100',
+    // Modal
+    clear_confirm1: 'This will permanently delete ALL your entries and settings. Are you sure?',
+    clear_title1: 'CLEAR ALL DATA',
+    clear_confirm2: 'Last chance — this cannot be undone. Delete everything?',
+    clear_title2: '⚠ FINAL WARNING',
+    import_confirm: 'This will permanently overwrite your current data with the backup file. Continue?',
+    import_title: 'IMPORT BACKUP',
+    modal_confirm: 'CONFIRM', modal_cancel: 'CANCEL',
+    // Misc
+    sign_in: 'SIGN IN', your_name: 'Your name', enter_name: 'Enter your name first',
+    placeholder_ro: '12345', placeholder_vehicle: '2024 Honda Accord', placeholder_hours: '2.5',
+    verify_ro: 'RO#', verify_vehicle: 'VEHICLE', verify_service: 'SERVICE',
+    verify_date: 'DATE', verify_hrs_logged: 'HRS LOGGED', verify_hrs_paid: 'HRS PAID',
+    verify_diff: 'DIFF',
+  },
+  es: {
+    nav_log: 'REGISTRO', nav_history: 'HISTORIAL', nav_verify: 'VERIFICAR', nav_settings: 'AJUSTES', nav_out: 'SALIR',
+    current_pay_period: 'PERÍODO DE PAGO ACTUAL', active_hrs: 'HRS ACTIVAS',
+    new_entry: 'NUEVA ENTRADA', ro_num: 'RO#', date: 'FECHA', vehicle_info: 'VEHÍCULO',
+    service: 'SERVICIO', hours_paid: 'HORAS PAGADAS', btn_log: '+ REGISTRAR',
+    export_period_csv: '↓ EXPORTAR CSV',
+    active_ros: 'ROs ACTIVAS — toca ✓ para marcar completa',
+    completed_ros: '✓ ROs COMPLETADAS', hide: '▲ OCULTAR', show: '▼ MOSTRAR',
+    period_total: 'TOTAL DEL PERÍODO', hrs: 'HRS', no_active: 'SIN ROs ACTIVAS', no_completed: 'SIN ROs COMPLETADAS',
+    subtotal: 'SUBTOTAL', add_service: '+ AGREGAR SVC', move_period: '⇄ MOVER PERÍODO', mark_incomplete: 'DESHACER',
+    move_ro_to: 'MOVER #', to_period: 'AL PERÍODO', target_period: 'PERÍODO DESTINO',
+    btn_move: 'MOVER', btn_cancel: 'CANCELAR', no_other_periods: 'Sin otros períodos disponibles',
+    all_history: 'TODO EL HISTORIAL', filter_period: 'FILTRAR POR PERÍODO', all_periods: 'Todos los períodos',
+    no_history: 'SIN ENTRADAS AÚN', no_matching: 'SIN ENTRADAS PARA ESTE PERÍODO',
+    verify_title: 'VERIFICAR PAGO', select_period: 'SELECCIONAR PERÍODO', choose_period: 'Elige un período…',
+    btn_load: 'CARGAR', btn_export_csv: '↓ EXPORTAR CSV',
+    verified_hrs: 'HRS VERIFICADAS', discrepancy: 'DIFERENCIA',
+    no_entries_period: 'Sin entradas para este período.',
+    service_list: 'LISTA DE SERVICIOS', btn_add_service: '+ AGREGAR SERVICIO', btn_save_list: 'GUARDAR LISTA',
+    theme: 'TEMA', language: 'IDIOMA',
+    data_management: 'GESTIÓN DE DATOS', signed_in_as: 'Sesión como',
+    data_desc: 'Los datos son locales a tu nombre. Toca Respaldo para guardar tus datos.',
+    btn_backup: '↓ RESPALDAR DATOS', btn_import: '↑ IMPORTAR RESPALDO (JSON)', btn_clear: '⚠ BORRAR TODO',
+    anchor_section: 'ANCLA DEL PERÍODO', anchor_label: 'FECHA DE INICIO',
+    anchor_desc: 'Todos los períodos se calculan desde esta fecha en ventanas de 14 días. Configúralo una vez.',
+    btn_save_anchor: 'GUARDAR FECHA',
+    pay_rate_section: 'TARIFA DE PAGO', hourly_rate_label: 'TARIFA POR HORA ($)', withholding_label: 'RETENCIÓN (%)',
+    pay_rate_desc: 'Se usa para estimar el pago bruto y neto en la página de Registro. La retención cubre impuestos y otras deducciones.',
+    btn_save_rate: 'GUARDAR TARIFA', gross_pay: 'BRUTO', net_pay: 'NETO',
+    toast_name_required: 'Ingresa tu nombre primero',
+    toast_ro_required: 'RO# requerido', toast_vehicle_required: 'Vehículo requerido', toast_hours_required: 'Horas válidas requeridas',
+    toast_logged: 'Entrada registrada', toast_updated: 'Entrada actualizada', toast_deleted: 'Entrada eliminada',
+    toast_svc_added: 'Servicio agregado', toast_moved: 'RO movida a', toast_no_entries: 'Sin entradas encontradas',
+    toast_select_period: 'Selecciona un período',
+    toast_anchor_saved: 'Fecha ancla guardada', toast_anchor_required: 'Selecciona una fecha',
+    toast_services_saved: 'Servicios guardados', toast_min_service: 'Agrega al menos un servicio',
+    toast_need_service: 'Se necesita al menos un servicio',
+    toast_theme_applied: 'tema aplicado',
+    toast_cleared: 'Todos los datos eliminados',
+    toast_backup_shared: 'Respaldo compartido', toast_backup_tap: 'Toca Compartir → Guardar en Archivos', toast_backup_exported: 'Respaldo exportado',
+    toast_imported: 'Respaldo importado correctamente', toast_import_error: 'Error al importar el archivo',
+    toast_csv_exported: 'CSV exportado',
+    toast_rate_saved: 'Tarifa guardada', toast_rate_invalid: 'Ingresa una tarifa por hora válida', toast_withholding_invalid: 'Ingresa un porcentaje de retención entre 0–100',
+    clear_confirm1: 'Esto eliminará permanentemente TODAS tus entradas y ajustes. ¿Estás seguro?',
+    clear_title1: 'BORRAR TODO',
+    clear_confirm2: 'Última oportunidad — esto no se puede deshacer. ¿Eliminar todo?',
+    clear_title2: '⚠ ADVERTENCIA FINAL',
+    import_confirm: 'Esto sobreescribirá permanentemente tus datos actuales con el archivo de respaldo. ¿Continuar?',
+    import_title: 'IMPORTAR RESPALDO',
+    modal_confirm: 'CONFIRMAR', modal_cancel: 'CANCELAR',
+    sign_in: 'INICIAR SESIÓN', your_name: 'Tu nombre', enter_name: 'Ingresa tu nombre primero',
+    placeholder_ro: '12345', placeholder_vehicle: '2024 Honda Accord', placeholder_hours: '2.5',
+    verify_ro: 'RO#', verify_vehicle: 'VEHÍCULO', verify_service: 'SERVICIO',
+    verify_date: 'FECHA', verify_hrs_logged: 'HRS REGISTRADAS', verify_hrs_paid: 'HRS PAGADAS',
+    verify_diff: 'DIFER.',
+  }
+};
+function t(key) { return (LANG[currentLang] || LANG.en)[key] || key; }
+function setLang(lang) {
+  currentLang = lang;
+  if (currentUser) save('lang', lang);
+  document.documentElement.setAttribute('lang', lang === 'es' ? 'es' : 'en');
+  renderNav();
+  if (currentPage === 'log') renderLog();
+  else if (currentPage === 'history') renderHistory();
+  else if (currentPage === 'verify') renderVerify();
+  else if (currentPage === 'settings') renderSettings();
+}
+function renderNav() {
+  document.querySelector('[data-page="log"]').textContent = t('nav_log');
+  document.querySelector('[data-page="history"]').textContent = t('nav_history');
+  document.querySelector('[data-page="verify"]').textContent = t('nav_verify');
+  document.querySelector('[data-page="settings"]').textContent = t('nav_settings');
+  document.getElementById('modal-cancel').textContent = t('modal_cancel');
+  document.getElementById('modal-confirm').textContent = t('modal_confirm');
+}
+
+// ═══════════════════════════════════════════════════════════
+// SUPABASE CONFIG (must be before STATE so restoreSession can read it)
+// ═══════════════════════════════════════════════════════════
+// Fill these in from your Supabase project: Settings → API
+const SUPABASE_URL = 'https://sqbxwmebhsvkocfjisiu.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNxYnh3bWViaHN2a29jZmppc2l1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQyNDc5ODgsImV4cCI6MjA5OTgyMzk4OH0.V5oNJiHn48g6PAGU9aP80Qz_CjDb_7WBRIa6vhdLljI';
+const INVENTORY_BUCKET = 'inventory-photos';
+let sb = null;
+try {
+  if (SUPABASE_URL.startsWith('https://') && !SUPABASE_URL.includes('YOUR-PROJECT-REF')) {
+    sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  }
+} catch (e) { console.warn('Supabase not configured:', e); }
+
+// ═══════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════
+let currentUser = null;
+let entries = [];
+let services = [...DEFAULT_SERVICES];
+let currentTheme = 'terminal';
+let anchorDate = DEFAULT_ANCHOR;
+let currentPage = 'log';
+let currentLang = 'en';
+let expandedPeriods = new Set();
+let expandedEdits = new Set();
+let expandedAddSvc = new Set();
+let expandedMovePeriod = new Set(); // roKeys with open move-period panel
+let expandedNotes = new Set(); // roKeys with open note panel
+let completedROs = {};      // { [roKey]: true } — roKey = ro.trim().toLowerCase()
+let roNotes = {};           // { [roKey]: "note text" } — one note per RO
+let showCompleted = false;  // toggle for completed section on log page
+let useRoundedGlass = false; // iOS liquid glass rounded mode
+let verifyChecks = {};
+let verifyMissing = [];
+let verifySelectedPeriod = null;
+let verifySearch = '';         // search query in verify tab
+// Cloud (Supabase) sync state
+let cloudSyncTimer = null;   // debounce timer for auto-sync
+let inventoryItems = []; // [{ id, label, imageData, rotation }]
+let _invReplaceId = null; // tracks which tile is being replaced
+let hourlyRate = 0;       // flag hour pay rate, in $
+let withholdingPct = 0;   // withholding/taxes, as a percent (e.g. 22 = 22%)
+
+// ═══════════════════════════════════════════════════════════
+// STORAGE
+// ═══════════════════════════════════════════════════════════
+function nsKey(key) { return `flaghours_${currentUser.id}_${key}`; }
+function load(key, fallback) {
+  try { const v = localStorage.getItem(nsKey(key)); return v ? JSON.parse(v) : fallback; }
+  catch { return fallback; }
+}
+function save(key, value) {
+  localStorage.setItem(nsKey(key), JSON.stringify(value));
+  // Trigger cloud sync for data mutations (not for settings like theme/lang)
+  if (['entries','completedROs','verifyChecks','verifyMissing','verifySelectedPeriod','services','anchor','inventoryItems','roNotes'].includes(key)) {
+    scheduleCloudSync();
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// AUTO-LOGIN — restore last session on page load
+// ═══════════════════════════════════════════════════════════
+function userFromSupabase(su) {
+  return {
+    id: su.id,
+    name: (su.user_metadata && su.user_metadata.name) || (su.email ? su.email.split('@')[0] : 'USER'),
+    email: su.email,
+    avatar: null,
+    isCloud: true
+  };
+}
+
+function restoreLocalSessionIfAny() {
+  try {
+    const saved = localStorage.getItem('flaghours_last_user');
+    if (!saved) return;
+    const user = JSON.parse(saved);
+    if (!user || !user.id || !user.name || user.isCloud) return; // cloud users come from Supabase, not this
+    setTimeout(() => signIn(user), 0);
+  } catch (e) { /* no saved session */ }
+}
+
+if (sb) {
+  // onAuthStateChange fires once with INITIAL_SESSION on load (with any
+  // persisted session already restored + refreshed by the client), then
+  // again on SIGNED_IN / SIGNED_OUT / TOKEN_REFRESHED as they happen.
+  // Supabase handles the refresh token dance for us — no manual re-auth.
+  sb.auth.onAuthStateChange((event, session) => {
+    if (event === 'INITIAL_SESSION') {
+      if (session && session.user) {
+        signIn(userFromSupabase(session.user));
+      } else {
+        restoreLocalSessionIfAny();
+      }
+    } else if (event === 'SIGNED_IN' && session && session.user) {
+      if (!currentUser || currentUser.id !== session.user.id) {
+        signIn(userFromSupabase(session.user));
+      }
+    }
+    // TOKEN_REFRESHED needs no handling — the sb client already updated
+    // its internal session and future requests use it automatically.
+    // SIGNED_OUT is handled explicitly by our own signOut() function.
+  });
+} else {
+  restoreLocalSessionIfAny();
+}
+
+// ═══════════════════════════════════════════════════════════
+// PAY PERIOD LOGIC
+// ═══════════════════════════════════════════════════════════
+function getPeriodForDate(dateStr, anchor) {
+  const d = new Date(dateStr + 'T00:00:00');
+  const a = new Date(anchor + 'T00:00:00');
+  const diff = Math.floor((d - a) / 86400000);
+  const idx = Math.floor(diff / 14);
+  const start = new Date(a); start.setDate(a.getDate() + idx * 14);
+  const end = new Date(start); end.setDate(start.getDate() + 13);
+  return { start: isoDate(start), end: isoDate(end) };
+}
+function getCurrentPeriod() { return getPeriodForDate(isoDate(new Date()), anchorDate); }
+function isoDate(d) { return d.toISOString().split('T')[0]; }
+function fmtDate(iso) {
+  const d = new Date(iso + 'T00:00:00');
+  return d.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+}
+function periodLabel(start, end) { return `${fmtDate(start)} – ${fmtDate(end)}`; }
+function periodKey(start, end) { return `${start}_${end}`; }
+
+// ═══════════════════════════════════════════════════════════
+// AUTH — Google Sign-In + Local Login
+// ═══════════════════════════════════════════════════════════
+
+function toggleLocalPanel() {
+  const panel = document.getElementById('local-panel');
+  const btn = document.getElementById('local-toggle-btn');
+  const visible = panel.style.display !== 'none';
+  panel.style.display = visible ? 'none' : 'flex';
+  btn.textContent = visible ? '▼ LOCAL NAME LOGIN' : '▲ LOCAL NAME LOGIN';
+}
+
+async function emailSignIn() {
+  if (!sb) { showToast('Supabase not configured yet.', true); return; }
+  const email = (document.getElementById('cloud-email-input').value || '').trim();
+  const password = document.getElementById('cloud-password-input').value || '';
+  if (!email || !password) { showToast('Enter email and password.', true); return; }
+  const btn = document.getElementById('cloud-signin-btn');
+  btn.disabled = true; btn.textContent = 'SIGNING IN…';
+  try {
+    const { data, error } = await sb.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+    // onAuthStateChange (SIGNED_IN) will call signIn() with the session user
+  } catch (e) {
+    showToast(e.message || 'Sign in failed.', true);
+  } finally {
+    btn.disabled = false; btn.textContent = 'SIGN IN';
+  }
+}
+
+async function emailSignUp() {
+  if (!sb) { showToast('Supabase not configured yet.', true); return; }
+  const email = (document.getElementById('cloud-email-input').value || '').trim();
+  const password = document.getElementById('cloud-password-input').value || '';
+  if (!email || !password) { showToast('Enter email and password.', true); return; }
+  if (password.length < 6) { showToast('Password must be at least 6 characters.', true); return; }
+  const btn = document.getElementById('cloud-signup-btn');
+  btn.disabled = true; btn.textContent = 'CREATING…';
+  try {
+    const { data, error } = await sb.auth.signUp({ email, password });
+    if (error) throw error;
+    if (data.session) {
+      // Email confirmation disabled on the project — signed in immediately
+      // via onAuthStateChange (SIGNED_IN).
+    } else {
+      showToast('Account created — check your email to confirm, then sign in.');
+    }
+  } catch (e) {
+    showToast(e.message || 'Sign up failed.', true);
+  } finally {
+    btn.disabled = false; btn.textContent = 'CREATE ACCOUNT';
+  }
+}
+
+function localLogin() {
+  const name = document.getElementById('demo-name-input').value.trim();
+  if (!name) { showToast(t('toast_name_required'), true); return; }
+  const id = 'local_' + name.toLowerCase().replace(/\s+/g, '_');
+  signIn({ id, name, avatar: null, isCloud: false });
+}
+
+document.getElementById('demo-name-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') localLogin();
+});
+
+document.getElementById('cloud-password-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') emailSignIn();
+});
+
+function signIn(user) {
+  currentUser = user;
+  
+  // Persist session so page reopens signed in (local users only — cloud
+  // users are restored via Supabase's own persisted session, not this)
+  if (!user.isCloud) {
+    localStorage.setItem('flaghours_last_user', JSON.stringify(user));
+  } else {
+    localStorage.removeItem('flaghours_last_user');
+  }
+
+  // Load user data
+  entries = load('entries', []);
+  services = load('services', [...DEFAULT_SERVICES]);
+  currentTheme = load('theme', 'terminal');
+  anchorDate = load('anchor', DEFAULT_ANCHOR);
+  verifyChecks = load('verifyChecks', {});
+  verifyMissing = load('verifyMissing', []);
+  verifySelectedPeriod = load('verifySelectedPeriod', null);
+  completedROs = load('completedROs', {});
+  roNotes = load('roNotes', {});
+  inventoryItems = load('inventoryItems', []);
+  currentLang = load('lang', 'en');
+  useRoundedGlass = load('useRoundedGlass', false);
+  hourlyRate = load('hourlyRate', 0);
+  withholdingPct = load('withholdingPct', 0);
+  applyGlassMode();
+  document.documentElement.setAttribute('lang', currentLang === 'es' ? 'es' : 'en');
+
+  applyTheme(currentTheme);
+
+  // Update UI avatar
+  const av = document.getElementById('user-avatar');
+  if (user.avatar) {
+    av.innerHTML = `<img src="${esc(user.avatar)}" alt="${esc(user.name)}" />`;
+    av.classList.add('google-avatar');
+  } else {
+    av.textContent = user.name.charAt(0).toUpperCase();
+    av.classList.remove('google-avatar');
+  }
+
+  // Populate dropdown menu
+  const menuName = document.getElementById('user-menu-name');
+  const menuSub = document.getElementById('user-menu-sub');
+  const menuSyncBtn = document.getElementById('user-menu-sync-btn');
+  if (menuName) menuName.textContent = user.name.toUpperCase();
+  if (menuSub) menuSub.textContent = user.isCloud ? (user.email || 'CLOUD ACCOUNT') : 'LOCAL ACCOUNT';
+  if (menuSyncBtn) menuSyncBtn.style.display = user.isCloud ? 'flex' : 'none';
+
+  document.getElementById('signin-page').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+
+  updateCloudSyncIndicator();
+
+  renderLog();
+
+  // Cloud accounts always sync — pull the latest on sign-in
+  if (user.isCloud) {
+    loadFromCloud().catch(e => console.warn('Cloud load skipped:', e));
+  }
+}
+
+function signOut() {
+  if (currentUser && currentUser.isCloud && sb) {
+    sb.auth.signOut().catch(() => {});
+  }
+  localStorage.removeItem('flaghours_last_user');
+  currentUser = null; entries = []; services = [...DEFAULT_SERVICES];
+  currentTheme = 'terminal'; anchorDate = DEFAULT_ANCHOR;
+  verifyChecks = {}; verifyMissing = []; verifySelectedPeriod = null; completedROs = {};
+  inventoryItems = [];
+  roNotes = {};
+  useRoundedGlass = false;
+  hourlyRate = 0;
+  withholdingPct = 0;
+  applyGlassMode();
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('signin-page').style.display = 'flex';
+  closeUserMenu();
+  // Reset local panel
+  const panel = document.getElementById('local-panel');
+  panel.style.display = 'none';
+  document.getElementById('local-toggle-btn').textContent = '▼ LOCAL NAME LOGIN';
+  document.getElementById('demo-name-input').value = '';
+  document.getElementById('cloud-email-input').value = '';
+  document.getElementById('cloud-password-input').value = '';
+  updateCloudSyncIndicator();
+}
+
+// ═══════════════════════════════════════════════════════════
+// SUPABASE CLOUD SYNC (table: user_data, bucket: inventory-photos)
+// ═══════════════════════════════════════════════════════════
+function updateCloudSyncIndicator() {
+  const indicator = document.getElementById('drive-sync-indicator');
+  if (!currentUser || !currentUser.isCloud || !sb) {
+    indicator.style.display = 'none';
+    return;
+  }
+  indicator.style.display = 'flex';
+}
+
+function setCloudSyncStatus(status) {
+  // status: 'syncing' | 'synced' | 'error' | 'off'
+  const dot = document.getElementById('drive-sync-dot');
+  if (!dot) return;
+  dot.className = 'drive-sync-dot';
+  dot.title = status === 'syncing' ? 'Syncing…' : status === 'synced' ? 'Cloud synced' : status === 'error' ? 'Sync error' : 'Cloud';
+  if (status === 'syncing') dot.classList.add('syncing');
+  else if (status === 'synced') dot.classList.add('synced');
+  else if (status === 'error') dot.classList.add('error');
+}
+
+async function saveToCloud() {
+  if (!sb || !currentUser || !currentUser.isCloud) return;
+  try {
+    setCloudSyncStatus('syncing');
+    const payload = {
+      entries, services, theme: currentTheme, anchorDate,
+      completedROs, verifyChecks, verifySelectedPeriod, inventoryItems, roNotes,
+      useRoundedGlass, hourlyRate, withholdingPct
+    };
+    const { error } = await sb.from('user_data').upsert({
+      user_id: currentUser.id,
+      data: payload,
+      updated_at: new Date().toISOString()
+    }, { onConflict: 'user_id' });
+    if (error) throw error;
+    setCloudSyncStatus('synced');
+  } catch (e) {
+    console.warn('Cloud sync error:', e);
+    setCloudSyncStatus('error');
+  }
+}
+
+async function loadFromCloud() {
+  if (!sb || !currentUser || !currentUser.isCloud) return;
+  try {
+    setCloudSyncStatus('syncing');
+    const { data: row, error } = await sb.from('user_data')
+      .select('data')
+      .eq('user_id', currentUser.id)
+      .maybeSingle();
+    if (error) throw error;
+    if (!row || !row.data) { setCloudSyncStatus('synced'); return; }
+    const data = row.data;
+    // Merge — cloud wins for data (it's the sync source of truth)
+    if (data.entries) { entries = data.entries; save('entries', entries); }
+    if (data.services) { services = data.services; save('services', services); }
+    if (data.completedROs) { completedROs = data.completedROs; save('completedROs', completedROs); }
+    if (data.verifyChecks) { verifyChecks = data.verifyChecks; save('verifyChecks', verifyChecks); }
+    if (data.inventoryItems) { inventoryItems = data.inventoryItems; save('inventoryItems', inventoryItems); }
+    if (data.roNotes) { roNotes = data.roNotes; save('roNotes', roNotes); }
+    if (data.anchorDate) { anchorDate = data.anchorDate; save('anchor', anchorDate); }
+    if (data.theme) { currentTheme = data.theme; applyTheme(currentTheme); save('theme', currentTheme); }
+    if (data.useRoundedGlass !== undefined) { useRoundedGlass = data.useRoundedGlass; save('useRoundedGlass', useRoundedGlass); applyGlassMode(); }
+    if (data.hourlyRate !== undefined) { hourlyRate = data.hourlyRate; save('hourlyRate', hourlyRate); }
+    if (data.withholdingPct !== undefined) { withholdingPct = data.withholdingPct; save('withholdingPct', withholdingPct); }
+    setCloudSyncStatus('synced');
+    if (currentPage === 'log') renderLog();
+    if (currentPage === 'inventory') renderInventory();
+    showToast('Synced from cloud');
+  } catch (e) {
+    console.warn('Cloud load error:', e);
+    setCloudSyncStatus('error');
+  }
+}
+
+// Debounced auto-sync — called after any data mutation
+function scheduleCloudSync() {
+  if (!sb || !currentUser || !currentUser.isCloud) return;
+  clearTimeout(cloudSyncTimer);
+  cloudSyncTimer = setTimeout(() => saveToCloud(), 2000); // 2s debounce
+}
+
+async function syncNow() {
+  if (!sb || !currentUser || !currentUser.isCloud) return;
+  await saveToCloud();
+  showToast('Synced to cloud');
+}
+
+// ── Page visibility — pull latest when tab comes back from sleep ──
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState !== 'visible') return;
+  if (!currentUser || !currentUser.isCloud || !sb) return;
+  loadFromCloud().catch(() => {});
+});
+
+// ═══════════════════════════════════════════════════════════
+// INVENTORY PHOTO STORAGE (Supabase Storage bucket, cloud users only —
+// local-only accounts keep storing photos as base64 in localStorage)
+// ═══════════════════════════════════════════════════════════
+function invStoragePath(itemId) {
+  return `${currentUser.id}/${itemId}`;
+}
+
+async function invUploadPhoto(itemId, file) {
+  const path = invStoragePath(itemId);
+  const { error } = await sb.storage.from(INVENTORY_BUCKET).upload(path, file, {
+    upsert: true,
+    contentType: file.type || 'image/jpeg'
+  });
+  if (error) throw error;
+  return path;
+}
+
+async function invGetSignedUrls(paths) {
+  if (!sb || paths.length === 0) return {};
+  const { data, error } = await sb.storage.from(INVENTORY_BUCKET).createSignedUrls(paths, 60 * 60 * 24); // 24h
+  if (error || !data) return {};
+  const map = {};
+  data.forEach(d => { if (d.signedUrl) map[d.path] = d.signedUrl; });
+  return map;
+}
+
+async function invDeletePhoto(itemId) {
+  if (!sb) return;
+  try { await sb.storage.from(INVENTORY_BUCKET).remove([invStoragePath(itemId)]); }
+  catch (e) { console.warn('Photo delete skipped:', e); }
+}
+// ═══════════════════════════════════════════════════════════
+// USER MENU (avatar dropdown)
+// ═══════════════════════════════════════════════════════════
+function toggleUserMenu() {
+  const menu = document.getElementById('user-menu');
+  const backdrop = document.getElementById('user-menu-backdrop');
+  const avatar = document.getElementById('user-avatar');
+  const isOpen = menu.classList.contains('open');
+  if (isOpen) {
+    menu.classList.remove('open');
+    backdrop.classList.remove('open');
+    avatar.classList.remove('open');
+  } else {
+    // Refresh sync btn visibility each time
+    const syncBtn = document.getElementById('user-menu-sync-btn');
+    if (syncBtn) syncBtn.style.display = (currentUser?.isCloud) ? 'flex' : 'none';
+    menu.classList.add('open');
+    backdrop.classList.add('open');
+    avatar.classList.add('open');
+  }
+}
+
+function closeUserMenu() {
+  document.getElementById('user-menu').classList.remove('open');
+  document.getElementById('user-menu-backdrop').classList.remove('open');
+  document.getElementById('user-avatar').classList.remove('open');
+}
+
+// ═══════════════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════════════
+function switchPage(page) {
+  currentPage = page;
+  ['log','history','verify','inventory','settings'].forEach(p => {
+    document.getElementById(`page-${p}`).style.display = p === page ? 'flex' : 'none';
+    document.querySelector(`[data-page="${p}"]`).classList.toggle('active', p === page);
+  });
+  if (page === 'log') renderLog();
+  if (page === 'history') renderHistory();
+  if (page === 'verify') renderVerify();
+  if (page === 'inventory') renderInventory();
+  if (page === 'settings') renderSettings();
+}
+
+// ═══════════════════════════════════════════════════════════
+// THEME
+// ═══════════════════════════════════════════════════════════
+function applyTheme(theme) {
+  document.body.setAttribute('data-theme', theme);
+  currentTheme = theme;
+}
+
+function applyGlassMode() {
+  if (useRoundedGlass) document.body.setAttribute('data-glass', 'rounded');
+  else document.body.removeAttribute('data-glass');
+}
+
+function toggleRoundedGlass(val) {
+  useRoundedGlass = val;
+  save('useRoundedGlass', useRoundedGlass);
+  applyGlassMode();
+  renderSettings();
+}
+
+// ═══════════════════════════════════════════════════════════
+// MODAL (replaces native browser confirm() for mobile)
+// ═══════════════════════════════════════════════════════════
+let _modalResolve = null;
+
+function showModal(msg, title = 'CONFIRM ACTION') {
+  return new Promise(resolve => {
+    _modalResolve = resolve;
+    document.getElementById('modal-title').textContent = title;
+    document.getElementById('modal-msg').textContent = msg;
+    document.getElementById('modal-overlay').classList.add('open');
+  });
+}
+
+document.getElementById('modal-confirm').addEventListener('click', () => {
+  document.getElementById('modal-overlay').classList.remove('open');
+  if (_modalResolve) { _modalResolve(true); _modalResolve = null; }
+});
+document.getElementById('modal-cancel').addEventListener('click', () => {
+  document.getElementById('modal-overlay').classList.remove('open');
+  if (_modalResolve) { _modalResolve(false); _modalResolve = null; }
+});
+document.getElementById('modal-overlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('modal-overlay')) {
+    document.getElementById('modal-overlay').classList.remove('open');
+    if (_modalResolve) { _modalResolve(false); _modalResolve = null; }
+  }
+});
+
+// ═══════════════════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════════════════
+let toastTimer;
+function showToast(msg, isErr) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = isErr ? 'var(--danger)' : 'var(--success)';
+  t.style.color = isErr ? '#fff' : '#000';
+  t.style.display = 'block';
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.style.display = 'none'; }, 2200);
+}
+
+// ═══════════════════════════════════════════════════════════
+// DATA IMPORT/EXPORT
+// ═══════════════════════════════════════════════════════════
+function exportCSV(rows, filename) {
+  const header = 'RO#,Vehicle Info,Date,Service,Hours Paid,Pay Period Start,Pay Period End\n';
+  const body = rows.map(e =>
+    [e.ro, e.vehicle, e.date, e.service, e.hours, e.periodStart, e.periodEnd]
+      .map(v => `"${String(v).replace(/"/g,'""')}"`)
+      .join(',')
+  ).join('\n');
+  const blob = new Blob([header + body], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename; a.click();
+  URL.revokeObjectURL(url);
+  showToast(t('toast_csv_exported'));
+}
+
+async function exportBackupZip() {
+  const dateStr = isoDate(new Date());
+  const safeName = currentUser.name.replace(/\s+/g, '-');
+  const filename = `flag-hours-backup-${safeName}-${dateStr}.json`;
+
+  const jsonData = {
+    version: 1,
+    user: currentUser,
+    entries: entries,
+    services: services,
+    theme: currentTheme,
+    anchorDate: anchorDate,
+    completedROs: completedROs,
+    useRoundedGlass: useRoundedGlass,
+    verifyChecks: verifyChecks,
+    verifySelectedPeriod: verifySelectedPeriod,
+    inventoryItems: inventoryItems,
+    roNotes: roNotes,
+    hourlyRate: hourlyRate,
+    withholdingPct: withholdingPct
+  };
+  const jsonStr = JSON.stringify(jsonData, null, 2);
+  const blob = new Blob([jsonStr], { type: 'application/json' });
+
+  // Try Web Share API first (works on iOS Safari and Android Chrome)
+  if (navigator.share && navigator.canShare) {
+    const file = new File([blob], filename, { type: 'application/json' });
+    if (navigator.canShare({ files: [file] })) {
+      try {
+        await navigator.share({ files: [file], title: 'FLAG//HOURS Backup' });
+        showToast(t('toast_backup_shared'));
+        return;
+      } catch (e) {
+        if (e.name !== 'AbortError') console.warn('Share failed:', e);
+        else return; // user cancelled
+      }
+    }
+  }
+
+  // Fallback: open JSON in new tab so user can Save/Share from browser
+  const url = URL.createObjectURL(blob);
+  const win = window.open(url, '_blank');
+  if (win) {
+    showToast(t('toast_backup_tap'));
+    setTimeout(() => URL.revokeObjectURL(url), 10000);
+  } else {
+    // Last resort: FileReader data URI
+    const reader = new FileReader();
+    reader.onload = function() {
+      const a = document.createElement('a');
+      a.href = reader.result;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    };
+    reader.readAsDataURL(blob);
+    showToast(t('toast_backup_exported'));
+  }
+}
+
+function importBackup(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = async function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+      
+      // Basic validation checks
+      if (!data.entries || !Array.isArray(data.entries) || !data.services) {
+        throw new Error("Invalid backup format");
+      }
+
+      const ok = await showModal(t('import_confirm'), t('import_title'));
+      if (!ok) {
+        event.target.value = '';
+        return;
+      }
+
+      // Restore data state
+      entries = data.entries;
+      services = data.services;
+      if (data.theme) currentTheme = data.theme;
+      if (data.anchorDate) anchorDate = data.anchorDate;
+      if (data.completedROs) completedROs = data.completedROs;
+      if (data.verifyChecks) verifyChecks = data.verifyChecks;
+      if (data.inventoryItems) inventoryItems = data.inventoryItems;
+      if (data.roNotes) roNotes = data.roNotes;
+      if (data.useRoundedGlass !== undefined) useRoundedGlass = data.useRoundedGlass;
+      if (data.hourlyRate !== undefined) hourlyRate = data.hourlyRate;
+      if (data.withholdingPct !== undefined) withholdingPct = data.withholdingPct;
+
+      // Save to local storage
+      save('entries', entries);
+      save('services', services);
+      save('theme', currentTheme);
+      save('anchor', anchorDate);
+      save('completedROs', completedROs);
+      save('verifyChecks', verifyChecks);
+      save('inventoryItems', inventoryItems);
+      save('roNotes', roNotes);
+      save('useRoundedGlass', useRoundedGlass);
+      save('hourlyRate', hourlyRate);
+      save('withholdingPct', withholdingPct);
+
+      // Re-apply settings visually
+      applyTheme(currentTheme);
+      applyGlassMode();
+      showToast(t('toast_imported'));
+      renderSettings();
+    } catch (err) {
+      showToast(t('toast_import_error'), true);
+      console.error(err);
+    }
+    event.target.value = ''; // Reset input to allow selecting same file again
+  };
+  reader.readAsText(file);
+}
+
+// ═══════════════════════════════════════════════════════════
+// INVENTORY PAGE
+// ═══════════════════════════════════════════════════════════
+function saveInventory() {
+  save('inventoryItems', inventoryItems);
+}
+
+// Session-only cache of storage path → signed URL (never persisted —
+// keeping this off the item objects means it never leaks into the
+// JSON payload that gets saved to localStorage/Supabase).
+let _invDisplayCache = {};
+
+async function invRefreshDisplayCache(paths) {
+  const missing = paths.filter(p => !_invDisplayCache[p]);
+  if (missing.length === 0) return;
+  const map = await invGetSignedUrls(missing);
+  Object.assign(_invDisplayCache, map);
+}
+
+function invDisplaySrc(item) {
+  if (item.imageData) return item.imageData;
+  if (item.imagePath) return _invDisplayCache[item.imagePath] || null;
+  return null;
+}
+
+// Wire the persistent file input once after DOM loads
+document.addEventListener('DOMContentLoaded', () => {
+  const inp = document.getElementById('inv-replace-input');
+  if (inp) inp.addEventListener('change', () => invHandleReplace(inp));
+});
+
+async function renderInventory() {
+  const el = document.getElementById('page-inventory');
+
+  // Cloud accounts store photos in Storage — resolve signed URLs first
+  // so the grid renders with images already in place, no loading flash.
+  if (sb && currentUser && currentUser.isCloud) {
+    const paths = inventoryItems.filter(i => i.imagePath && !i.imageData).map(i => i.imagePath);
+    if (paths.length) await invRefreshDisplayCache(paths);
+  }
+
+  const tilesHTML = inventoryItems.map(item => {
+    const rot = item.rotation || 0;
+    const src = invDisplaySrc(item);
+    const imgContent = src
+      ? `<img class="inv-tile-img" src="${src}" style="transform:rotate(${rot}deg)" alt="${esc(item.label)}" />`
+      : `<div class="inv-empty-img">📦</div>`;
+    // Tap overlay covers the image area only (above the footer)
+    const tapOverlay = src
+      ? `<div onclick="invOpenLightbox('${item.id}')" style="position:absolute;inset:0;bottom:2.2rem;z-index:1;cursor:zoom-in"></div>`
+      : '';
+    return `
+      <div class="inv-tile">
+        ${imgContent}
+        ${tapOverlay}
+        <div class="inv-tile-footer">
+          <div class="inv-tile-label">${esc(item.label) || 'UNLABELED'}</div>
+          <button class="inv-tile-btn" onclick="invRotate('${item.id}')" title="Rotate 180°">↻</button>
+          <button class="inv-tile-btn" onclick="invReplacePhoto('${item.id}')" title="Replace photo">📷</button>
+          <button class="inv-tile-btn" onclick="invDelete('${item.id}')" title="Delete" style="border-color:rgba(239,68,68,0.4);color:#f87171">✕</button>
+        </div>
+      </div>`;
+  }).join('');
+
+  el.innerHTML = `
+    <div class="period-header fade-in">
+      <div style="flex:1">
+        <div class="label">INVENTORY</div>
+        <div class="period-dates" style="font-size:0.75rem;margin-top:0.2rem">Tap + to add a material box. Replace photo anytime without losing the label.</div>
+      </div>
+    </div>
+    <div class="inv-grid fade-in">
+      ${tilesHTML}
+      <div class="inv-add-tile" onclick="invAdd()">
+        <div class="inv-add-icon">+</div>
+        <div class="inv-add-label">ADD BOX</div>
+      </div>
+    </div>
+  `;
+}
+
+function invAdd() {
+  const overlay = document.getElementById('inv-modal-overlay');
+  const labelInp = document.getElementById('inv-label-inp');
+  labelInp.value = '';
+  overlay.style.display = 'flex';
+  setTimeout(() => labelInp.focus(), 100);
+  labelInp.onkeydown = e => {
+    if (e.key === 'Enter') invModalConfirm();
+    if (e.key === 'Escape') invModalCancel();
+  };
+}
+
+function invModalCancel() {
+  document.getElementById('inv-modal-overlay').style.display = 'none';
+}
+
+function invModalConfirm() {
+  const label = (document.getElementById('inv-label-inp').value || '').trim();
+  document.getElementById('inv-modal-overlay').style.display = 'none';
+  const id = Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+  inventoryItems.push({ id, label, imageData: null, imagePath: null, rotation: 0 });
+  saveInventory();
+  renderInventory();
+  // Open photo picker immediately
+  _invReplaceId = id;
+  const inp = document.getElementById('inv-replace-input');
+  if (inp) { inp.value = ''; inp.click(); }
+}
+
+function invReplacePhoto(id) {
+  _invReplaceId = id;
+  const inp = document.getElementById('inv-replace-input');
+  if (inp) { inp.value = ''; inp.click(); }
+}
+
+async function invHandleReplace(input) {
+  const file = input.files[0];
+  const itemId = _invReplaceId;
+  if (!file || !itemId) return;
+  const item = inventoryItems.find(i => i.id === itemId);
+  if (!item) { _invReplaceId = null; return; }
+
+  if (sb && currentUser && currentUser.isCloud) {
+    // Cloud accounts: upload to Supabase Storage, keep only the path
+    // (not base64) in the synced JSON so syncs stay small and fast.
+    try {
+      const path = await invUploadPhoto(itemId, file);
+      delete _invDisplayCache[path]; // force a fresh signed URL next render
+      item.imagePath = path;
+      item.imageData = null;
+      saveInventory();
+    } catch (e) {
+      console.error(e);
+      showToast('Photo upload failed.', true);
+    }
+    _invReplaceId = null;
+    renderInventory();
+  } else {
+    // Local-only accounts: keep the original base64-in-localStorage approach
+    const reader = new FileReader();
+    reader.onload = e => {
+      item.imageData = e.target.result;
+      item.imagePath = null;
+      saveInventory();
+      _invReplaceId = null;
+      renderInventory();
+    };
+    reader.readAsDataURL(file);
+  }
+}
+
+function invRotate(id) {
+  const item = inventoryItems.find(i => i.id === id);
+  if (!item) return;
+  item.rotation = ((item.rotation || 0) + 180) % 360;
+  saveInventory();
+  // Update just the image transform — no full re-render needed
+  document.querySelectorAll('.inv-tile').forEach(tile => {
+    const btn = tile.querySelector(`[onclick="invRotate('${id}')"]`);
+    if (btn) {
+      const img = tile.querySelector('.inv-tile-img');
+      if (img) img.style.transform = `rotate(${item.rotation}deg)`;
+    }
+  });
+}
+
+async function invDelete(id) {
+  const item = inventoryItems.find(i => i.id === id);
+  if (!item) return;
+  const ok = await showModal(`Delete "${item.label || 'this box'}"?`, 'DELETE BOX');
+  if (!ok) return;
+  if (item.imagePath) {
+    delete _invDisplayCache[item.imagePath];
+    if (sb && currentUser && currentUser.isCloud) invDeletePhoto(id).catch(() => {});
+  }
+  inventoryItems = inventoryItems.filter(i => i.id !== id);
+  saveInventory();
+  renderInventory();
+}
+
+function invOpenLightbox(id) {
+  const item = inventoryItems.find(i => i.id === id);
+  const src = item ? invDisplaySrc(item) : null;
+  if (!item || !src) return;
+  const img = document.getElementById('inv-lightbox-img');
+  const lbl = document.getElementById('inv-lightbox-label');
+  img.src = src;
+  img.style.transform = `rotate(${item.rotation || 0}deg)`;
+  lbl.textContent = item.label || '';
+  document.getElementById('inv-lightbox').style.display = 'flex';
+}
+
+function invCloseLightbox() {
+  document.getElementById('inv-lightbox').style.display = 'none';
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    const lb = document.getElementById('inv-lightbox');
+    if (lb && lb.style.display === 'flex') invCloseLightbox();
+  }
+});
+
+// ═══════════════════════════════════════════════════════════
+// LOG PAGE
+// ═══════════════════════════════════════════════════════════
+function groupByRO(entryList) {
+  // Group entries by ro+vehicle key, preserving insertion order of first occurrence
+  const order = [];
+  const map = {};
+  entryList.forEach(e => {
+    const k = e.ro.trim().toLowerCase();
+    if (!map[k]) { map[k] = { ro: e.ro, vehicle: e.vehicle, lines: [] }; order.push(k); }
+    map[k].lines.push(e);
+  });
+  return order.map(k => map[k]);
+}
+
+function renderLog() {
+  const period = getCurrentPeriod();
+
+  // Collect entries for current period PLUS any incomplete ROs from past periods
+  const allActiveEntries = entries.filter(e => {
+    const roKey = e.ro.trim().toLowerCase();
+    // Always include current period entries
+    if (e.periodStart === period.start && e.periodEnd === period.end) return true;
+    // Include past-period entries whose RO is not completed — they carry forward
+    if (e.periodStart < period.start && !completedROs[roKey]) return true;
+    return false;
+  });
+
+  const incompleteEntries = allActiveEntries.filter(e => !completedROs[e.ro.trim().toLowerCase()]);
+  const completedEntries = allActiveEntries.filter(e => !!completedROs[e.ro.trim().toLowerCase()]);
+  const total = allActiveEntries.reduce((s, e) => s + e.hours, 0);
+  const incompleteTotal = incompleteEntries.reduce((s, e) => s + e.hours, 0);
+  const completedTotal = completedEntries.reduce((s, e) => s + e.hours, 0);
+
+  // Pay estimates (only shown when a flag rate is set in Settings)
+  const activeGross = incompleteTotal * hourlyRate;
+  const activeNet = activeGross * (1 - withholdingPct / 100);
+  const totalGross = total * hourlyRate;
+  const totalNet = totalGross * (1 - withholdingPct / 100);
+  const fmtMoney = n => `$${n.toFixed(2)}`;
+
+  const today = isoDate(new Date());
+  const sel = services.map(s => `<option value="${esc(s)}">${esc(s)}</option>`).join('');
+
+  const incompleteHTML = incompleteEntries.length === 0
+    ? `<div class="empty fade-in">${t('no_active')}</div>`
+    : renderGroupedEntries(incompleteEntries, sel);
+
+  const completedGroupsHTML = completedEntries.length === 0
+    ? `<div class="empty" style="padding:1rem 0.85rem">${t('no_completed')}</div>`
+    : renderGroupedEntries(completedEntries, sel);
+
+  document.getElementById('page-log').innerHTML = `
+    <div class="period-header fade-in">
+      <div>
+        <div class="label">${t('current_pay_period')}</div>
+        <div class="period-dates">${periodLabel(period.start, period.end)}</div>
+      </div>
+      <div style="text-align:right">
+        <div class="label">${t('active_hrs')}</div>
+        <div class="total-hrs">${incompleteTotal.toFixed(2)}</div>
+        ${hourlyRate > 0 ? `<div style="font-size:0.68rem;color:var(--text2);margin-top:0.15rem">${fmtMoney(activeGross)} ${t('gross_pay')}${withholdingPct > 0 ? ` · ${fmtMoney(activeNet)} ${t('net_pay')}` : ''}</div>` : ''}
+      </div>
+    </div>
+
+    <div class="card card-pad fade-in" style="display:flex;flex-direction:column;gap:0.6rem">
+      <div class="label" style="padding-bottom:0.25rem">${t('new_entry')}</div>
+      <div class="form-grid-2">
+        <div class="field">
+          <label class="label">${t('ro_num')}</label>
+          <input id="f-ro" class="inp" type="text" placeholder="12345" autocomplete="off" />
+        </div>
+        <div class="field">
+          <label class="label">${t('date')}</label>
+          <input id="f-date" type="hidden" value="${today}" />
+          <button type="button" class="date-picker-btn" id="f-date-btn" onclick="DP.open('f-date','f-date-btn')">
+            <span class="dp-text" id="f-date-display">${(() => { const d = new Date(today + 'T12:00:00'); return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}); })()}</span>
+            <span class="dp-icon">&#128197;</span>
+          </button>
+        </div>
+      </div>
+      <div class="field">
+        <label class="label">${t('vehicle_info')}</label>
+        <input id="f-vehicle" class="inp" type="text" placeholder="2024 Honda Accord" autocomplete="off" />
+      </div>
+      <div class="form-grid-3">
+        <div class="field">
+          <label class="label">${t('service')}</label>
+          <select id="f-service" class="inp">${sel}</select>
+        </div>
+        <div class="field">
+          <label class="label">${t('hours_paid')}</label>
+          <input id="f-hours" class="inp" type="text" inputmode="decimal" placeholder="2.5" autocomplete="off" />
+        </div>
+        <div class="field" style="justify-content:flex-end">
+          <label class="label">&nbsp;</label>
+          <button class="btn btn-accent" onclick="addEntry()" style="width:100%;justify-content:center;padding:0.65rem 0.5rem">${t('btn_log')}</button>
+        </div>
+      </div>
+      <div id="form-err" class="err-msg" style="display:none"></div>
+    </div>
+
+    ${allActiveEntries.length > 0 ? `
+    <div class="export-row fade-in">
+      <button class="btn btn-ghost" onclick="exportCSV(getCurrentPeriodEntries(), 'flag-hours-${period.start}.csv')">
+        ↓ EXPORT PERIOD CSV
+      </button>
+    </div>` : ''}
+
+    <div id="entries-list">
+      <div class="verify-section-label" style="padding:0 0 0.25rem">${t('active_ros')}</div>
+      ${incompleteHTML}
+
+      <div class="completed-section-toggle fade-in" onclick="toggleShowCompleted()">
+        <span class="label" style="color:var(--success)">${t('completed_ros')} (${completedEntries.length > 0 ? groupByRO(completedEntries).length : 0})</span>
+        <span style="font-size:0.65rem;color:var(--text3)">${showCompleted ? t('hide') : t('show')}</span>
+      </div>
+      ${showCompleted ? `<div style="display:flex;flex-direction:column;gap:0.85rem">${completedGroupsHTML}</div>` : ''}
+
+      ${allActiveEntries.length > 0 ? `
+      <div class="totals-bar fade-in" style="flex-direction:column;align-items:stretch;gap:0.15rem">
+        <div style="display:flex;justify-content:space-between">
+          <span class="totals-label">${t('period_total')}</span>
+          <span class="totals-val">${total.toFixed(2)} ${t('hrs')}</span>
+        </div>
+        ${hourlyRate > 0 ? `
+        <div style="display:flex;justify-content:space-between">
+          <span class="totals-label" style="opacity:0.7">${t('gross_pay')}</span>
+          <span class="totals-val" style="font-size:0.85rem">${fmtMoney(totalGross)}</span>
+        </div>` : ''}
+        ${hourlyRate > 0 && withholdingPct > 0 ? `
+        <div style="display:flex;justify-content:space-between">
+          <span class="totals-label" style="opacity:0.7">${t('net_pay')}</span>
+          <span class="totals-val" style="font-size:0.85rem">${fmtMoney(totalNet)}</span>
+        </div>` : ''}
+      </div>` : ''}
+    </div>
+  `;
+
+  document.getElementById('f-ro').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('f-vehicle').focus(); });
+  document.getElementById('f-vehicle').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('f-hours').focus(); });
+  document.getElementById('f-hours').addEventListener('keydown', e => { if (e.key === 'Enter') addEntry(); });
+}
+
+function renderGroupedEntries(entryList, selHtml) {
+  const groups = groupByRO(entryList);
+  if (!selHtml) selHtml = services.map(s => `<option value="${esc(s)}">${esc(s)}</option>`).join('');
+  return groups.map(g => roGroupHTML(g, selHtml)).join('');
+}
+
+function roGroupHTML(g, selHtml) {
+  const roKey = g.ro.trim().toLowerCase();
+  const subtotal = g.lines.reduce((s, e) => s + e.hours, 0);
+  const isAddOpen = expandedAddSvc.has(roKey);
+  const isMoveOpen = expandedMovePeriod.has(roKey);
+  const isCompleted = !!completedROs[roKey];
+  const isNoteOpen = expandedNotes.has(roKey);
+  const hasNote = !!(roNotes[roKey] && roNotes[roKey].trim());
+
+  const serviceLines = g.lines.map(e => {
+    const isEditOpen = expandedEdits.has(e.id);
+    return `
+      <div class="ro-service-line" id="sline-${e.id}">
+        <div class="ro-service-info">
+          <span class="ro-svc-name">${esc(e.service)}</span>
+          <span class="ro-svc-date">${e.date}</span>
+        </div>
+        <span class="ro-svc-hrs">${Number(e.hours).toFixed(2)}</span>
+        <button class="edit-btn" onclick="toggleEditPanel('${e.id}')" title="Edit">✎</button>
+        <button class="del-btn" onclick="deleteEntry('${e.id}')">✕</button>
+      </div>
+      ${isEditOpen ? editPanelHTML(e, selHtml) : ''}
+    `;
+  }).join('');
+
+  // Build period options for move panel (all periods except the one these entries belong to)
+  const allPeriodKeys = getAllPastAndCurrentPeriods();
+  const currentEntryPeriod = g.lines[0] ? periodKey(g.lines[0].periodStart, g.lines[0].periodEnd) : null;
+  const movePeriodOptions = allPeriodKeys
+    .filter(p => p.key !== currentEntryPeriod)
+    .map(p => `<option value="${p.key}">${periodLabel(p.start, p.end)}</option>`)
+    .join('');
+
+  const movePanelHTML = isMoveOpen ? `
+    <div class="ro-move-panel" id="movepanel-${roKey}">
+      <div class="label" style="color:var(--accent)">${t('move_ro_to')} #${esc(g.ro)} ${t('to_period')}</div>
+      <div class="field">
+        <label class="label">${t('target_period')}</label>
+        <select class="inp" id="move-period-${roKey}">
+          ${movePeriodOptions || '<option disabled>' + t('no_other_periods') + '</option>'}
+        </select>
+      </div>
+      <div style="display:flex;gap:0.4rem">
+        <button class="btn btn-accent" onclick="moveROToPeriod('${roKey}')" style="flex:1;justify-content:center">${t('btn_move')}</button>
+        <button class="btn btn-ghost" onclick="toggleMovePeriod('${roKey}')" style="flex:1;justify-content:center">${t('btn_cancel')}</button>
+      </div>
+    </div>` : '';
+
+  const notePanelHTML = isNoteOpen ? `
+    <div class="ro-note-panel" id="notepanel-${roKey}">
+      <div class="label" style="color:var(--accent)">RO NOTE — #${esc(g.ro)}</div>
+      <textarea class="inp" id="ro-note-inp-${roKey}" rows="3" placeholder="e.g. Customer added door edges last minute, job ran long...">${esc(roNotes[roKey] || '')}</textarea>
+      <div style="display:flex;gap:0.4rem">
+        <button class="btn btn-accent" onclick="saveRoNote('${roKey}')" style="flex:1;justify-content:center">SAVE NOTE</button>
+        ${hasNote ? `<button class="btn btn-danger" onclick="deleteRoNote('${roKey}')">DELETE</button>` : ''}
+        <button class="btn btn-ghost" onclick="toggleRoNote('${roKey}')" style="flex:1;justify-content:center">${t('btn_cancel')}</button>
+      </div>
+    </div>` : '';
+
+  return `<div class="ro-group ${isCompleted ? 'is-completed' : ''}" id="rogroup-${roKey}">
+    <div class="ro-group-header">
+      <button class="ro-complete-btn ${isCompleted ? 'completed' : ''}" onclick="toggleCompleteRO('${roKey}')" title="${isCompleted ? 'Mark incomplete' : 'Mark complete'}">
+        ${isCompleted ? '✓' : ''}
+      </button>
+      <div class="ro-group-header-left">
+        <div class="ro-group-ro">#${esc(g.ro)}</div>
+        <div class="ro-group-vehicle">${esc(g.vehicle)}</div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:0.4rem">
+        <div style="text-align:right">
+          <div class="ro-group-subtotal-label">${t('subtotal')}</div>
+          <div class="ro-group-subtotal">${subtotal.toFixed(2)}</div>
+        </div>
+        <button class="ro-note-btn ${hasNote ? 'has-note' : ''}" onclick="toggleRoNote('${roKey}')" title="${hasNote ? 'Edit note' : 'Add note'}">📝</button>
+      </div>
+    </div>
+    ${notePanelHTML}
+    ${serviceLines}
+    <div class="ro-group-footer">
+      <button class="add-svc-btn" onclick="toggleAddSvc('${roKey}')">
+        ${isAddOpen ? '▲ ' + t('btn_cancel') : t('add_service')}
+      </button>
+      <button class="add-svc-btn" onclick="toggleMovePeriod('${roKey}')" style="color:var(--text3)">
+        ${isMoveOpen ? '▲ ' + t('btn_cancel') : t('move_period')}
+      </button>
+    </div>
+    ${isAddOpen ? addSvcPanelHTML(g, selHtml) : ''}
+    ${movePanelHTML}
+  </div>`;
+}
+
+function editPanelHTML(e, selHtml) {
+  const selWithCurrent = services.map(s =>
+    `<option value="${esc(s)}" ${s === e.service ? 'selected' : ''}>${esc(s)}</option>`
+  ).join('');
+  return `<div class="ro-edit-panel" id="editpanel-${e.id}">
+    <div class="label" style="color:var(--accent)">${t('new_entry')}</div>
+    <div class="form-grid-2">
+      <div class="field">
+        <label class="label">RO#</label>
+        <input class="inp" id="ep-ro-${e.id}" type="text" value="${esc(e.ro)}" autocomplete="off" />
+      </div>
+      <div class="field">
+        <label class="label">DATE</label>
+        <input type="hidden" id="ep-date-${e.id}" value="${e.date}" />
+        <button type="button" class="date-picker-btn" id="ep-date-btn-${e.id}" onclick="DP.open('ep-date-${e.id}','ep-date-btn-${e.id}')">
+          <span class="dp-text" id="ep-date-display-${e.id}">${(() => { const d = new Date(e.date + 'T12:00:00'); return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}); })()}</span>
+          <span class="dp-icon">&#128197;</span>
+        </button>
+      </div>
+    </div>
+    <div class="field">
+      <label class="label">${t('vehicle_info')}</label>
+      <input class="inp" id="ep-vehicle-${e.id}" type="text" value="${esc(e.vehicle)}" autocomplete="off" />
+    </div>
+    <div class="form-grid-2">
+      <div class="field">
+        <label class="label">SERVICE</label>
+        <select class="inp" id="ep-service-${e.id}">${selWithCurrent}</select>
+      </div>
+      <div class="field">
+        <label class="label">HOURS PAID</label>
+        <input class="inp" id="ep-hours-${e.id}" type="text" inputmode="decimal" value="${e.hours}" autocomplete="off" />
+      </div>
+    </div>
+    <div class="ro-edit-actions">
+      <button class="btn btn-accent" onclick="saveEdit('${e.id}')" style="flex:1;justify-content:center">${t('btn_save_anchor').startsWith('SAVE') ? 'SAVE' : t('btn_save_anchor').split(' ')[0]}</button>
+      <button class="btn btn-ghost" onclick="toggleEditPanel('${e.id}')" style="flex:1;justify-content:center">${t('btn_cancel')}</button>
+    </div>
+  </div>`;
+}
+
+function addSvcPanelHTML(g, selHtml) {
+  const roKey = g.ro.trim().toLowerCase();
+  // Pre-fill RO and vehicle from group
+  return `<div class="ro-add-svc-panel" id="addsvc-${roKey}">
+    <div class="label" style="color:var(--accent)">${t('add_service')} #${esc(g.ro)}</div>
+    <div class="form-grid-2">
+      <div class="field">
+        <label class="label">DATE</label>
+        <input type="hidden" id="as-date-${roKey}" value="${isoDate(new Date())}" />
+        <button type="button" class="date-picker-btn" id="as-date-btn-${roKey}" onclick="DP.open('as-date-${roKey}','as-date-btn-${roKey}')">
+          <span class="dp-text" id="as-date-display-${roKey}">${(() => { const d = new Date(); return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}); })()}</span>
+          <span class="dp-icon">&#128197;</span>
+        </button>
+      </div>
+      <div class="field">
+        <label class="label">HOURS PAID</label>
+        <input class="inp" id="as-hours-${roKey}" type="text" inputmode="decimal" placeholder="2.5" autocomplete="off" />
+      </div>
+    </div>
+    <div class="field">
+      <label class="label">${t('service')}</label>
+      <select class="inp" id="as-service-${roKey}">${selHtml}</select>
+    </div>
+    <button class="btn btn-accent" onclick="addServiceToRO('${roKey}','${esc(g.ro)}','${esc(g.vehicle)}')" style="justify-content:center">${t('btn_log')} LINE</button>
+  </div>`;
+}
+
+function toggleEditPanel(id) {
+  if (expandedEdits.has(id)) expandedEdits.delete(id);
+  else { expandedEdits.add(id); }
+  if (currentPage === 'log') renderLog();
+  if (currentPage === 'history') renderHistory();
+}
+
+function toggleAddSvc(roKey) {
+  if (expandedAddSvc.has(roKey)) expandedAddSvc.delete(roKey);
+  else expandedAddSvc.add(roKey);
+  if (currentPage === 'log') renderLog();
+  if (currentPage === 'history') renderHistory();
+}
+
+function toggleCompleteRO(roKey) {
+  if (completedROs[roKey]) delete completedROs[roKey];
+  else completedROs[roKey] = true;
+  save('completedROs', completedROs);
+  if (currentPage === 'log') renderLog();
+  if (currentPage === 'history') renderHistory();
+}
+
+function toggleRoNote(roKey) {
+  if (expandedNotes.has(roKey)) expandedNotes.delete(roKey);
+  else expandedNotes.add(roKey);
+  if (currentPage === 'log') renderLog();
+  if (currentPage === 'history') renderHistory();
+}
+
+function saveRoNote(roKey) {
+  const inp = document.getElementById(`ro-note-inp-${roKey}`);
+  const val = (inp ? inp.value : '').trim();
+  if (val) roNotes[roKey] = val;
+  else delete roNotes[roKey];
+  save('roNotes', roNotes);
+  expandedNotes.delete(roKey);
+  showToast('Note saved');
+  if (currentPage === 'log') renderLog();
+  if (currentPage === 'history') renderHistory();
+}
+
+function deleteRoNote(roKey) {
+  delete roNotes[roKey];
+  save('roNotes', roNotes);
+  expandedNotes.delete(roKey);
+  showToast('Note deleted');
+  if (currentPage === 'log') renderLog();
+  if (currentPage === 'history') renderHistory();
+}
+
+function toggleShowCompleted() {
+  showCompleted = !showCompleted;
+  renderLog();
+}
+
+function toggleMovePeriod(roKey) {
+  if (expandedMovePeriod.has(roKey)) expandedMovePeriod.delete(roKey);
+  else { expandedMovePeriod.add(roKey); expandedAddSvc.delete(roKey); }
+  if (currentPage === 'log') renderLog();
+  if (currentPage === 'history') renderHistory();
+}
+
+function getAllPastAndCurrentPeriods() {
+  // Returns all periods that have entries, plus the current period, sorted newest first
+  const cp = getCurrentPeriod();
+  const seen = new Set();
+  const periods = [];
+  // Always include current period
+  const cpKey = periodKey(cp.start, cp.end);
+  seen.add(cpKey);
+  periods.push({ key: cpKey, start: cp.start, end: cp.end });
+  entries.forEach(e => {
+    const k = periodKey(e.periodStart, e.periodEnd);
+    if (!seen.has(k)) { seen.add(k); periods.push({ key: k, start: e.periodStart, end: e.periodEnd }); }
+  });
+  return periods.sort((a, b) => b.key.localeCompare(a.key));
+}
+
+function moveROToPeriod(roKey) {
+  const selectEl = document.getElementById(`move-period-${roKey}`);
+  if (!selectEl || !selectEl.value) { showToast(t('toast_select_period'), true); return; }
+  const targetKey = selectEl.value;
+  // Parse start/end from key (format: "start_end")
+  const [targetStart, targetEnd] = targetKey.split('_');
+  // Update all entries with this roKey
+  let moved = 0;
+  entries.forEach(e => {
+    if (e.ro.trim().toLowerCase() === roKey) {
+      e.periodStart = targetStart;
+      e.periodEnd = targetEnd;
+      moved++;
+    }
+  });
+  if (moved === 0) { showToast(t('toast_no_entries'), true); return; }
+  save('entries', entries);
+  expandedMovePeriod.delete(roKey);
+  showToast(`${t('toast_moved')} ${periodLabel(targetStart, targetEnd)}`);
+  if (currentPage === 'log') renderLog();
+  if (currentPage === 'history') renderHistory();
+}
+
+function saveEdit(id) {
+  const e = entries.find(x => x.id === id);
+  if (!e) return;
+  const ro = document.getElementById(`ep-ro-${id}`).value.trim();
+  const date = document.getElementById(`ep-date-${id}`).value;
+  const vehicle = document.getElementById(`ep-vehicle-${id}`).value.trim();
+  const service = document.getElementById(`ep-service-${id}`).value;
+  const hoursRaw = document.getElementById(`ep-hours-${id}`).value.trim();
+  if (!ro) { showToast(t('toast_ro_required'), true); return; }
+  if (!vehicle) { showToast(t('toast_vehicle_required'), true); return; }
+  if (!hoursRaw || isNaN(parseFloat(hoursRaw)) || parseFloat(hoursRaw) <= 0) { showToast(t('toast_hours_required'), true); return; }
+  const period = getPeriodForDate(date, anchorDate);
+  e.ro = ro; e.date = date; e.vehicle = vehicle;
+  e.service = service; e.hours = parseFloat(hoursRaw);
+  e.periodStart = period.start; e.periodEnd = period.end;
+  save('entries', entries);
+  expandedEdits.delete(id);
+  showToast(t('toast_updated'));
+  if (currentPage === 'log') renderLog();
+  if (currentPage === 'history') renderHistory();
+}
+
+function addServiceToRO(roKey, ro, vehicle) {
+  const date = document.getElementById(`as-date-${roKey}`).value;
+  const service = document.getElementById(`as-service-${roKey}`).value;
+  const hoursRaw = document.getElementById(`as-hours-${roKey}`).value.trim();
+  if (!hoursRaw || isNaN(parseFloat(hoursRaw)) || parseFloat(hoursRaw) <= 0) { showToast(t('toast_hours_required'), true); return; }
+  const period = getPeriodForDate(date, anchorDate);
+  const entry = {
+    id: Date.now().toString() + Math.random().toString(36).slice(2,6),
+    ro, vehicle, date, service,
+    hours: parseFloat(hoursRaw),
+    periodStart: period.start,
+    periodEnd: period.end
+  };
+  // Insert right after the last entry with same ro key
+  const lastIdx = entries.reduce((best, e, i) => e.ro.trim().toLowerCase() === roKey ? i : best, -1);
+  if (lastIdx >= 0) entries.splice(lastIdx + 1, 0, entry);
+  else entries.unshift(entry);
+  save('entries', entries);
+  expandedAddSvc.delete(roKey);
+  showToast(t('toast_svc_added'));
+  if (currentPage === 'log') renderLog();
+  if (currentPage === 'history') renderHistory();
+}
+
+function getCurrentPeriodEntries() {
+  const p = getCurrentPeriod();
+  return entries.filter(e => e.periodStart === p.start && e.periodEnd === p.end);
+}
+
+function addEntry() {
+  const ro = document.getElementById('f-ro').value.trim();
+  const vehicle = document.getElementById('f-vehicle').value.trim();
+  const date = document.getElementById('f-date').value;
+  const service = document.getElementById('f-service').value;
+  const hoursRaw = document.getElementById('f-hours').value.trim();
+  const errEl = document.getElementById('form-err');
+
+  if (!ro) { showErr('RO# is required'); return; }
+  if (!vehicle) { showErr('Vehicle info is required'); return; }
+  if (!hoursRaw || isNaN(parseFloat(hoursRaw)) || parseFloat(hoursRaw) <= 0) { showErr('Enter valid hours (e.g. 2.5)'); return; }
+
+  errEl.style.display = 'none';
+
+  const period = getPeriodForDate(date, anchorDate);
+  const entry = {
+    id: Date.now().toString() + Math.random().toString(36).slice(2,6),
+    ro, vehicle, date, service,
+    hours: parseFloat(hoursRaw),
+    periodStart: period.start,
+    periodEnd: period.end
+  };
+
+  entries.unshift(entry);
+  save('entries', entries);
+  showToast(t('toast_logged'));
+  renderLog();
+}
+
+function showErr(msg) {
+  const el = document.getElementById('form-err');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+async function deleteEntry(id) {
+  const ok = await showModal('Delete this entry? This cannot be undone.');
+  if (!ok) return;
+  entries = entries.filter(e => e.id !== id);
+  expandedEdits.delete(id);
+  save('entries', entries);
+  showToast(t('toast_deleted'));
+  if (currentPage === 'log') renderLog();
+  if (currentPage === 'history') renderHistory();
+}
+
+// ═══════════════════════════════════════════════════════════
+// HISTORY PAGE
+// ═══════════════════════════════════════════════════════════
+function renderHistory() {
+  const cp = getCurrentPeriod();
+  const cpKey = periodKey(cp.start, cp.end);
+
+  // Group entries by period, exclude current
+  const groups = {};
+  entries.forEach(e => {
+    const k = periodKey(e.periodStart, e.periodEnd);
+    if (k === cpKey) return;
+    if (!groups[k]) groups[k] = { entries: [], start: e.periodStart, end: e.periodEnd };
+    groups[k].entries.push(e);
+  });
+
+  const sorted = Object.entries(groups).sort((a, b) => b[0].localeCompare(a[0]));
+
+  let html = `<div class="label" style="padding-bottom:0.25rem">${t('all_history')}</div>`;
+
+  if (sorted.length === 0) {
+    html += `<div class="empty">${t('no_history')}</div>`;
+  } else {
+    // All-time export
+    html += `<div class="export-row fade-in">
+      <button class="btn btn-ghost" onclick="exportAllCSV('flag-hours-all.csv')">${t('export_period_csv')} (ALL)</button>
+    </div>`;
+
+    sorted.forEach(([k, group]) => {
+      const total = group.entries.reduce((s, e) => s + e.hours, 0);
+      const label = periodLabel(group.start, group.end);
+      const isOpen = expandedPeriods.has(k);
+
+      html += `<div class="hist-period fade-in">
+        <div class="hist-header" onclick="togglePeriod('${k}')">
+          <div>
+            <div class="hist-period-label">${label}</div>
+            <div class="hist-meta">${group.entries.length} ${group.entries.length === 1 ? (currentLang==='es' ? 'entrada' : 'entry') : (currentLang==='es' ? 'entradas' : 'entries')}</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:1rem">
+            <div style="text-align:right">
+              <div class="label">${t('period_total')}</div>
+              <div class="hist-total">${total.toFixed(2)} ${t('hrs')}</div>
+            </div>
+            <span class="hist-chevron ${isOpen ? 'open' : ''}">▼</span>
+          </div>
+        </div>`;
+
+      if (isOpen) {
+        const selHtml = services.map(s => `<option value="${esc(s)}">${esc(s)}</option>`).join('');
+        html += `<div class="hist-body">
+          <div style="margin-bottom:0.5rem">
+            <button class="btn btn-ghost" onclick="exportCSV(getGroupEntries('${k}'), 'flag-hours-${group.start}.csv')">${t('export_period_csv')}</button>
+          </div>
+          ${renderGroupedEntries(group.entries, selHtml)}
+        </div>`;
+      }
+
+      html += `</div>`;
+    });
+  }
+
+  document.getElementById('page-history').innerHTML = html;
+}
+
+function togglePeriod(k) {
+  if (expandedPeriods.has(k)) expandedPeriods.delete(k);
+  else expandedPeriods.add(k);
+  renderHistory();
+}
+
+function getGroupEntries(k) {
+  return entries.filter(e => periodKey(e.periodStart, e.periodEnd) === k);
+}
+
+// ═══════════════════════════════════════════════════════════
+// SETTINGS PAGE
+// ═══════════════════════════════════════════════════════════
+let anchorOpen = false;
+
+function renderSettings() {
+  const themeButtons = THEMES.map(th =>
+    `<button class="theme-btn ${currentTheme === th ? 'active' : ''}" onclick="setTheme('${th}')">${THEME_LABELS[th]}</button>`
+  ).join('');
+
+  const serviceItems = services.map((s, i) => `
+    <div class="service-item">
+      <input class="inp svc-input" type="text" value="${esc(s)}" style="flex:1" />
+      <button class="reorder-btn" onclick="moveService(${i}, -1)" ${i === 0 ? 'disabled' : ''}>↑</button>
+      <button class="reorder-btn" onclick="moveService(${i}, 1)" ${i === services.length - 1 ? 'disabled' : ''}>↓</button>
+      <button class="del-btn" onclick="removeService(${i})">✕</button>
+    </div>`
+  ).join('');
+
+  const langButtons = ['en','es'].map(l =>
+    `<button class="theme-btn ${currentLang === l ? 'active' : ''}" onclick="setLang('${l}')">${l === 'en' ? 'English' : 'Español'}</button>`
+  ).join('');
+
+  // Cloud sync section — only shown for cloud (Supabase) accounts.
+  // No enable/disable toggle needed: sessions persist and refresh
+  // automatically, so sync is just always on.
+  const cloudSyncHTML = (currentUser && currentUser.isCloud) ? `
+    <div class="settings-section fade-in">
+      <div class="settings-section-title">☁ CLOUD SYNC</div>
+      <div style="font-size:0.75rem;color:var(--text2);line-height:1.7;">
+        Your data syncs automatically within 2 seconds of any change, and stays signed in across visits — no repeated logins.
+      </div>
+      ${!sb ? `
+      <div style="display:flex;align-items:center;gap:0.75rem;padding:0.5rem 0.75rem;background:var(--danger-dim);border:1px solid var(--danger)">
+        <span style="font-size:0.65rem;color:var(--danger);letter-spacing:0.1em;flex:1">⚠ SUPABASE NOT CONFIGURED</span>
+      </div>` : `
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
+        <button class="btn btn-ghost" onclick="syncNow()" style="flex:1;justify-content:center;min-width:120px">↑ SYNC NOW</button>
+        <button class="btn btn-ghost" onclick="loadFromCloud()" style="flex:1;justify-content:center;min-width:120px">↓ PULL FROM CLOUD</button>
+      </div>
+      <div class="label" style="color:var(--success);line-height:1.8">
+        ✓ Signed in as ${esc(currentUser.email || currentUser.name)}
+      </div>`}
+    </div>` : '';
+
+  document.getElementById('page-settings').innerHTML = `
+    ${cloudSyncHTML}
+
+    <div class="settings-section fade-in">
+      <div class="settings-section-title">${t('service_list')}</div>
+      <div id="services-list" style="display:flex;flex-direction:column;gap:0.45rem">
+        ${serviceItems}
+      </div>
+      <div style="display:flex;gap:0.5rem;margin-top:0.25rem">
+        <button class="btn btn-ghost" onclick="addService()" style="flex:1;justify-content:center">${t('btn_add_service')}</button>
+        <button class="btn btn-accent" onclick="saveServices()" style="flex:1;justify-content:center">${t('btn_save_list')}</button>
+      </div>
+    </div>
+
+    <div class="settings-section fade-in">
+      <div class="settings-section-title">${t('theme')}</div>
+      <div class="theme-grid">${themeButtons}</div>
+    </div>
+
+    <div class="settings-section fade-in">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem">
+        <div>
+          <div style="font-size:0.72rem;color:var(--text);font-weight:700;letter-spacing:0.06em;margin-bottom:0.2rem">ROUND CORNERS</div>
+          <div class="label" style="line-height:1.7">Rounded corners, deep blur, spring animations</div>
+        </div>
+        <div onclick="toggleRoundedGlass(${!useRoundedGlass})" style="
+          width:2.8rem;height:1.5rem;border-radius:999px;flex-shrink:0;
+          background:${useRoundedGlass ? 'var(--accent)' : 'var(--border)'};
+          position:relative;transition:background 0.25s;cursor:pointer;
+          box-shadow:${useRoundedGlass ? '0 0 12px var(--accent-dim)' : 'none'}
+        ">
+          <div style="
+            position:absolute;top:0.16rem;
+            left:${useRoundedGlass ? '1.28rem' : '0.16rem'};
+            width:1.18rem;height:1.18rem;border-radius:50%;
+            background:#fff;
+            transition:left 0.25s cubic-bezier(0.34,1.56,0.64,1);
+            box-shadow:0 1px 4px rgba(0,0,0,0.3)
+          "></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="settings-section fade-in">
+      <div class="settings-section-title">${t('language')}</div>
+      <div class="theme-grid">${langButtons}</div>
+    </div>
+
+    <div class="settings-section fade-in">
+      <div class="settings-section-title">${t('data_management')}</div>
+      <div style="font-size:0.78rem;color:var(--text2)">${t('signed_in_as')} <span style="color:var(--text)">${esc(currentUser.name)}</span>${currentUser.isCloud ? ' <span style="color:var(--accent);font-size:0.6rem">[CLOUD]</span>' : ' <span style="color:var(--text3);font-size:0.6rem">[LOCAL]</span>'}</div>
+      <div class="label" style="line-height:1.8;margin-top:0.5rem;margin-bottom:0.25rem;">${t('data_desc')}</div>
+      <div style="display:flex;gap:0.5rem;margin-top:0.25rem;flex-wrap:wrap">
+        <button class="btn btn-accent" onclick="exportBackupZip()" style="flex:1;justify-content:center;min-width:140px">${t('btn_backup')}</button>
+      </div>
+      <div style="display:flex;gap:0.5rem;margin-top:0.5rem;flex-wrap:wrap">
+        <label class="btn btn-ghost" style="flex:1;justify-content:center;min-width:140px;cursor:pointer;">
+          ${t('btn_import')}
+          <input type="file" id="import-file" accept=".json" style="display:none" onchange="importBackup(event)" />
+        </label>
+        <button class="btn btn-danger" onclick="clearAllData()" style="flex:1;justify-content:center;min-width:140px">${t('btn_clear')}</button>
+      </div>
+    </div>
+
+    <div class="settings-section fade-in">
+      <div class="settings-section-title">${t('pay_rate_section')}</div>
+      <div class="form-grid-2">
+        <div class="field">
+          <label class="label">${t('hourly_rate_label')}</label>
+          <input id="s-hourly-rate" class="inp" type="text" inputmode="decimal" placeholder="28.50" value="${hourlyRate ? hourlyRate : ''}" autocomplete="off" />
+        </div>
+        <div class="field">
+          <label class="label">${t('withholding_label')}</label>
+          <input id="s-withholding" class="inp" type="text" inputmode="decimal" placeholder="22" value="${withholdingPct ? withholdingPct : ''}" autocomplete="off" />
+        </div>
+      </div>
+      <div class="label" style="line-height:1.8;color:var(--text3)">${t('pay_rate_desc')}</div>
+      <button class="btn btn-accent" onclick="savePayRate()">${t('btn_save_rate')}</button>
+    </div>
+
+    <div class="settings-section fade-in">
+      <div class="settings-collapsible-header" onclick="toggleAnchorOpen()" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;margin:-0.1rem">
+        <div class="settings-section-title" style="margin:0">${t('anchor_section')}</div>
+        <span style="font-size:0.65rem;color:var(--text3)">${anchorOpen ? '▲' : '▼'}</span>
+      </div>
+      ${anchorOpen ? `
+        <div class="field" style="margin-top:0.5rem">
+          <label class="label">${t('anchor_label')}</label>
+          <input id="s-anchor" class="inp" type="date" value="${anchorDate}" />
+        </div>
+        <div class="label" style="line-height:1.8;color:var(--text3)">${t('anchor_desc')}</div>
+        <button class="btn btn-accent" onclick="saveAnchor()">${t('btn_save_anchor')}</button>
+      ` : ''}
+    </div>
+  `;
+}
+
+function toggleAnchorOpen() {
+  anchorOpen = !anchorOpen;
+  renderSettings();
+}
+
+function saveAnchor() {
+  const val = document.getElementById('s-anchor').value;
+  if (!val) { showToast(t('toast_anchor_required'), true); return; }
+  anchorDate = val;
+  save('anchor', anchorDate);
+  showToast(t('toast_anchor_saved'));
+}
+
+function savePayRate() {
+  const rateVal = document.getElementById('s-hourly-rate').value.trim();
+  const withVal = document.getElementById('s-withholding').value.trim();
+
+  const rate = rateVal === '' ? 0 : parseFloat(rateVal);
+  const withholding = withVal === '' ? 0 : parseFloat(withVal);
+
+  if (rateVal !== '' && (isNaN(rate) || rate < 0)) { showToast(t('toast_rate_invalid'), true); return; }
+  if (withVal !== '' && (isNaN(withholding) || withholding < 0 || withholding > 100)) { showToast(t('toast_withholding_invalid'), true); return; }
+
+  hourlyRate = rate;
+  withholdingPct = withholding;
+  save('hourlyRate', hourlyRate);
+  save('withholdingPct', withholdingPct);
+  scheduleCloudSync();
+  showToast(t('toast_rate_saved'));
+  renderSettings();
+  if (currentPage === 'log') renderLog();
+}
+
+function saveServices() {
+  const inputs = document.querySelectorAll('.svc-input');
+  const list = [];
+  inputs.forEach(inp => { const v = inp.value.trim(); if (v) list.push(v); });
+  if (list.length === 0) { showToast(t('toast_min_service'), true); return; }
+  services = list;
+  save('services', services);
+  showToast(t('toast_services_saved'));
+  renderSettings();
+}
+
+function addService() {
+  // Read current values before re-render
+  readServiceInputs();
+  services.push('');
+  renderSettings();
+  // Focus the new input
+  const inputs = document.querySelectorAll('.svc-input');
+  if (inputs.length) inputs[inputs.length - 1].focus();
+}
+
+function removeService(i) {
+  readServiceInputs();
+  if (services.length <= 1) { showToast(t('toast_need_service'), true); return; }
+  services.splice(i, 1);
+  renderSettings();
+}
+
+function moveService(i, dir) {
+  readServiceInputs();
+  const j = i + dir;
+  if (j < 0 || j >= services.length) return;
+  [services[i], services[j]] = [services[j], services[i]];
+  renderSettings();
+}
+
+function readServiceInputs() {
+  const inputs = document.querySelectorAll('.svc-input');
+  const list = [];
+  inputs.forEach(inp => { const v = inp.value.trim(); if (v) list.push(v); });
+  if (list.length > 0) services = list;
+}
+
+function setTheme(theme) {
+  applyTheme(theme);
+  save('theme', theme);
+  showToast(`${THEME_LABELS[theme]} ${t('toast_theme_applied')}`);
+  renderSettings();
+}
+
+async function clearAllData() {
+  const ok1 = await showModal(t('clear_confirm1'), t('clear_title1'));
+  if (!ok1) return;
+  const ok2 = await showModal(t('clear_confirm2'), t('clear_title2'));
+  if (!ok2) return;
+  ['entries','services','theme','anchor','verifyChecks','verifyMissing','verifySelectedPeriod','completedROs','inventoryItems','roNotes','hourlyRate','withholdingPct'].forEach(k => localStorage.removeItem(nsKey(k)));
+  entries = []; services = [...DEFAULT_SERVICES]; currentTheme = 'terminal'; anchorDate = DEFAULT_ANCHOR;
+  verifyChecks = {}; verifyMissing = []; verifySelectedPeriod = null; completedROs = {};
+  inventoryItems = [];
+  roNotes = {};
+  hourlyRate = 0;
+  withholdingPct = 0;
+  applyTheme('terminal');
+  showToast(t('toast_cleared'));
+  renderSettings();
+  switchPage('log');
+}
+
+// ═══════════════════════════════════════════════════════════
+// VERIFY PAGE
+// ═══════════════════════════════════════════════════════════
+function saveVerify() {
+  save('verifyChecks', verifyChecks);
+  save('verifyMissing', verifyMissing);
+  save('verifySelectedPeriod', verifySelectedPeriod);
+}
+
+function renderVerify() {
+  const periods = getAllPastAndCurrentPeriods();
+  const el = document.getElementById('page-verify');
+
+  if (periods.length === 0) {
+    el.innerHTML = `<div class="empty fade-in">NO ENTRIES LOGGED YET</div>`;
+    return;
+  }
+
+  if (!verifySelectedPeriod || !periods.find(p => p.key === verifySelectedPeriod)) {
+    verifySelectedPeriod = periods[0].key;
+    saveVerify();
+  }
+
+  // Only entries in the selected period that belong to COMPLETED ROs
+  const allPeriodEntries = entries.filter(e => periodKey(e.periodStart, e.periodEnd) === verifySelectedPeriod);
+  const periodEntries = allPeriodEntries.filter(e => !!completedROs[e.ro.trim().toLowerCase()]);
+  const incompletePeriodCount = allPeriodEntries.filter(e => !completedROs[e.ro.trim().toLowerCase()]).length;
+
+  const periodOptions = periods.map(p =>
+    `<option value="${p.key}" ${p.key === verifySelectedPeriod ? 'selected' : ''}>${periodLabel(p.start, p.end)}</option>`
+  ).join('');
+
+  // Group by RO for display
+  const groups = groupByRO(periodEntries);
+  _verifyGroupsCache = groups;
+  const totalROs = groups.length;
+  const confirmedROs = groups.filter(g => {
+    return g.lines.every(e => verifyChecks[e.id] === 'confirmed');
+  }).length;
+  const confirmedHrs = periodEntries.filter(e => verifyChecks[e.id] === 'confirmed').reduce((s, e) => s + e.hours, 0);
+  const missingHrs = periodEntries.filter(e => verifyChecks[e.id] === 'missing').reduce((s, e) => s + e.hours, 0);
+  const totalHrs = periodEntries.reduce((s, e) => s + e.hours, 0);
+  const pct = totalROs > 0 ? Math.round((confirmedROs / totalROs) * 100) : 0;
+
+  const entryRows = buildVerifyRows(groups, verifySearch.trim().toLowerCase());
+
+  el.innerHTML = `
+    <div class="period-header fade-in">
+      <div style="flex:1">
+        <div class="label">${t('verify_title')}</div>
+        <div class="period-dates" style="font-size:0.75rem;margin-top:0.2rem">Only completed ROs appear here. Mark each line confirmed ✓ or missing ✕.</div>
+      </div>
+    </div>
+
+    <div class="card card-pad fade-in" style="display:flex;flex-direction:column;gap:0.6rem">
+      <div class="label">${t('select_period')}</div>
+      <select class="inp" onchange="setVerifyPeriod(this.value)">${periodOptions}</select>
+      ${incompletePeriodCount > 0 ? `<div class="label" style="color:var(--danger)">⚠ ${incompletePeriodCount} incomplete RO line${incompletePeriodCount !== 1 ? 's' : ''} in this period are hidden — mark them complete on the LOG tab to see them here, or move them to a different period.</div>` : ''}
+    </div>
+
+    <div class="verify-status-bar fade-in">
+      <div>
+        <div class="label">${t('verified_hrs').replace(' HRS','') + ' ROs'}</div>
+        <div style="font-size:1rem;font-weight:700;color:var(--text);font-family:var(--font-display);letter-spacing:0.05em">${confirmedROs} / ${totalROs}</div>
+      </div>
+      <div style="text-align:center">
+        <div class="label">${t('verified_hrs')}</div>
+        <div style="font-size:1rem;font-weight:700;color:var(--success);font-family:var(--font-display)">${confirmedHrs.toFixed(2)}</div>
+      </div>
+      <div style="text-align:right">
+        <div class="label">${t('discrepancy')}</div>
+        <div style="font-size:1rem;font-weight:700;color:var(--danger);font-family:var(--font-display)">${missingHrs.toFixed(2)}</div>
+      </div>
+    </div>
+    <div class="verify-progress" style="margin-top:-0.85rem">
+      <div class="verify-progress-fill" style="width:${pct}%"></div>
+    </div>
+
+    <div style="display:flex;gap:0.5rem;flex-wrap:wrap" class="fade-in">
+      <button class="btn btn-ghost" onclick="checkAllVerify()" style="flex:1;justify-content:center;min-width:120px">${t('completed_ros').split(' ')[0]} ${t('nav_verify')}</button>
+      <button class="btn btn-ghost" onclick="uncheckAllVerify()" style="flex:1;justify-content:center;min-width:120px">✕ ${t('btn_clear').replace('⚠ ','').split(' ')[0]} ALL</button>
+    </div>
+
+    <div class="fade-in">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:0.4rem 0.85rem 0.25rem">
+        <div class="verify-section-label" style="padding:0">${t('completed_ros')} ${t('period_total').split(' ')[0] === 'TOTAL' ? 'THIS PERIOD' : 'ESTE PERÍODO'}</div>
+        <div style="display:flex;gap:1.2rem;font-size:0.58rem;letter-spacing:0.12em;color:var(--text3)">
+          <span style="color:var(--success)">✓ ON SHEET</span>
+          <span style="color:var(--danger)">✕ MISSING</span>
+        </div>
+      </div>
+      <div style="padding:0 0 0.5rem">
+        <input
+          id="verify-search-inp"
+          class="inp"
+          type="text"
+          placeholder="SEARCH RO# OR VEHICLE…"
+          value="${esc(verifySearch)}"
+          oninput="setVerifySearch(this.value)"
+          autocomplete="off"
+          autocorrect="off"
+          autocapitalize="none"
+          spellcheck="false"
+          style="width:100%;box-sizing:border-box;font-size:0.72rem;letter-spacing:0.05em"
+        />
+      </div>
+      <div id="verify-results">
+        ${entryRows}
+      </div>
+    </div>
+  `;
+}
+
+// cached for search-only re-renders
+let _verifyGroupsCache = [];
+
+function buildVerifyRows(groups, searchQ) {
+  const filtered = searchQ
+    ? groups.filter(g =>
+        g.ro.toLowerCase().includes(searchQ) ||
+        g.vehicle.toLowerCase().includes(searchQ))
+    : groups;
+
+  if (filtered.length === 0) {
+    return `<div class="empty" style="padding:1.5rem">${searchQ ? 'NO RESULTS FOR "' + esc(searchQ.toUpperCase()) + '"' : t('no_completed')}</div>`;
+  }
+
+  return filtered.map(g => {
+    const roKey = g.ro.trim().toLowerCase();
+    const subtotal = g.lines.reduce((s, e) => s + e.hours, 0);
+    const allConfirmed = g.lines.every(e => verifyChecks[e.id] === 'confirmed');
+    const anyMissing = g.lines.some(e => verifyChecks[e.id] === 'missing');
+    const rowClass = allConfirmed ? 'confirmed' : anyMissing ? 'missing' : '';
+
+    const lines = g.lines.map(e => {
+      const state = verifyChecks[e.id] || '';
+      const isConfirmed = state === 'confirmed';
+      const isMissing = state === 'missing';
+      return `<div class="verify-ro-row ${isConfirmed ? 'confirmed' : isMissing ? 'missing' : ''}" style="padding-left:1.5rem;border-top:1px solid var(--border)">
+        <div class="verify-check ${isConfirmed ? 'checked' : ''}" onclick="toggleVerify('${e.id}','confirmed')" title="On timesheet">${isConfirmed ? '✓' : ''}</div>
+        <div class="verify-ro-info">
+          <div class="verify-service">${esc(e.service)}<span style="color:var(--text3);font-size:0.6rem;margin-left:0.4rem">${e.date}</span></div>
+        </div>
+        <div class="verify-hrs ${isConfirmed ? 'confirmed' : isMissing ? 'missing' : ''}">${Number(e.hours).toFixed(2)}</div>
+        <div class="verify-check ${isMissing ? 'marked-missing' : ''}" onclick="toggleVerify('${e.id}','missing')" title="Missing from timesheet" style="border-color:var(--danger);color:var(--danger)">${isMissing ? '✕' : ''}</div>
+      </div>`;
+    }).join('');
+
+    return `<div style="display:flex;flex-direction:column;border:1px solid var(--border)">
+      <div class="verify-ro-row ${rowClass}" style="border:none;background:var(--bg2)">
+        <div class="verify-check" style="cursor:default;opacity:0;pointer-events:none"></div>
+        <div class="verify-ro-info">
+          <div class="verify-ro-num ${anyMissing ? 'missing-text' : ''}">#${esc(g.ro)}${anyMissing ? '<span style="color:var(--danger);font-size:0.58rem;margin-left:0.4rem">NOT ON TIMESHEET</span>' : ''}</div>
+          <div class="verify-vehicle">${esc(g.vehicle)}</div>
+          ${roNotes[roKey] && roNotes[roKey].trim() ? `<div style="font-size:0.62rem;color:var(--accent);margin-top:0.25rem;line-height:1.5">📝 ${esc(roNotes[roKey])}</div>` : ''}
+        </div>
+        <div class="verify-hrs" style="font-size:1.1rem;color:var(--accent)">${subtotal.toFixed(2)}</div>
+        <div class="verify-check" style="cursor:default;opacity:0;pointer-events:none"></div>
+      </div>
+      ${lines}
+    </div>`;
+  }).join('');
+}
+
+function setVerifySearch(val) {
+  verifySearch = val;
+  const el = document.getElementById('verify-results');
+  if (el) el.innerHTML = buildVerifyRows(_verifyGroupsCache, val.trim().toLowerCase());
+}
+
+function setVerifyPeriod(key) {
+  verifySelectedPeriod = key;
+  verifySearch = '';
+  saveVerify();
+  renderVerify();
+}
+
+function toggleVerify(id, action) {
+  // If already in that state, toggle it off. Otherwise set it.
+  if (verifyChecks[id] === action) delete verifyChecks[id];
+  else verifyChecks[id] = action;
+  saveVerify();
+  renderVerify();
+}
+
+function checkAllVerify() {
+  const periodEntries = entries.filter(e =>
+    periodKey(e.periodStart, e.periodEnd) === verifySelectedPeriod &&
+    !!completedROs[e.ro.trim().toLowerCase()]
+  );
+  periodEntries.forEach(e => { verifyChecks[e.id] = 'confirmed'; });
+  saveVerify();
+  renderVerify();
+}
+
+function uncheckAllVerify() {
+  const periodEntries = entries.filter(e =>
+    periodKey(e.periodStart, e.periodEnd) === verifySelectedPeriod &&
+    !!completedROs[e.ro.trim().toLowerCase()]
+  );
+  periodEntries.forEach(e => { delete verifyChecks[e.id]; });
+  saveVerify();
+  renderVerify();
+}
+
+// ═══════════════════════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════════════════════
+function esc(str) {
+  return String(str)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+// ═══════════════════════════════════════════════════════════
+// CUSTOM DATE PICKER (DP)
+// ═══════════════════════════════════════════════════════════
+const DP = (() => {
+  const MONTHS = ['JANUARY','FEBRUARY','MARCH','APRIL','MAY','JUNE','JULY','AUGUST','SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER'];
+  let currentInputId = null;
+  let currentBtnId = null;
+  let viewYear = 0;
+  let viewMonth = 0;
+  let inMonthView = false;
+
+  function isoToDisplay(iso) {
+    if (!iso) return '';
+    const d = new Date(iso + 'T12:00:00');
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+
+  function todayISO() {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  }
+
+  function positionPopup(btnId) {
+    const popup = document.getElementById('dp-popup');
+    const btn = document.getElementById(btnId);
+    if (!btn) return;
+    const rect = btn.getBoundingClientRect();
+    const popW = 280, popH = 340;
+    const vw = window.innerWidth, vh = window.innerHeight;
+    let top = rect.bottom + 6;
+    let left = rect.left;
+    if (left + popW > vw - 8) left = vw - popW - 8;
+    if (left < 8) left = 8;
+    if (top + popH > vh - 8) top = rect.top - popH - 6;
+    if (top < 8) top = 8;
+    popup.style.top = top + 'px';
+    popup.style.left = left + 'px';
+    popup.style.width = Math.min(popW, vw - 16) + 'px';
+  }
+
+  function renderDays() {
+    const container = document.getElementById('dp-days');
+    const label = document.getElementById('dp-month-label');
+    const todayStr = todayISO();
+    const inputEl = currentInputId ? document.getElementById(currentInputId) : null;
+    const selectedISO = inputEl ? inputEl.value : '';
+
+    label.textContent = `${MONTHS[viewMonth].slice(0,3)} ${viewYear}`;
+
+    const firstDay = new Date(viewYear, viewMonth, 1).getDay();
+    const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+
+    let html = '';
+    for (let i = 0; i < firstDay; i++) html += '<div class="dp-day dp-day-empty"></div>';
+    for (let d = 1; d <= daysInMonth; d++) {
+      const iso = `${viewYear}-${String(viewMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      let cls = 'dp-day';
+      if (iso === todayStr) cls += ' dp-day-today';
+      if (iso === selectedISO) cls += ' dp-day-selected';
+      html += `<div class="${cls}" onclick="DP.selectDate('${iso}')">${d}</div>`;
+    }
+    container.innerHTML = html;
+  }
+
+  function renderMonthGrid() {
+    const grid = document.getElementById('dp-month-grid');
+    const yearLabel = document.getElementById('dp-year-label');
+    yearLabel.textContent = viewYear;
+    const inputEl = currentInputId ? document.getElementById(currentInputId) : null;
+    const selectedISO = inputEl ? inputEl.value : '';
+    const selParts = selectedISO ? selectedISO.split('-') : [];
+    const selYear = selParts[0] ? parseInt(selParts[0]) : -1;
+    const selMonth = selParts[1] ? parseInt(selParts[1]) - 1 : -1;
+
+    let html = '';
+    MONTHS.forEach((m, i) => {
+      const isActive = (i === selMonth && selYear === viewYear) ? ' active' : '';
+      html += `<div class="dp-month-item${isActive}" onclick="DP.selectMonth(${i})">${m.slice(0,3)}</div>`;
+    });
+    grid.innerHTML = html;
+  }
+
+  function render() {
+    if (inMonthView) {
+      document.getElementById('dp-calendar-view').style.display = 'none';
+      document.getElementById('dp-month-view').style.display = 'block';
+      renderMonthGrid();
+    } else {
+      document.getElementById('dp-calendar-view').style.display = 'block';
+      document.getElementById('dp-month-view').style.display = 'none';
+      renderDays();
+    }
+  }
+
+  function open(inputId, btnId) {
+    currentInputId = inputId;
+    currentBtnId = btnId;
+    inMonthView = false;
+    const inputEl = document.getElementById(inputId);
+    const val = inputEl ? inputEl.value : '';
+    if (val) {
+      const parts = val.split('-');
+      viewYear = parseInt(parts[0]);
+      viewMonth = parseInt(parts[1]) - 1;
+    } else {
+      const now = new Date();
+      viewYear = now.getFullYear();
+      viewMonth = now.getMonth();
+    }
+    const popup = document.getElementById('dp-popup');
+    const overlay = document.getElementById('dp-overlay');
+    popup.classList.add('open');
+    overlay.classList.add('open');
+    const btn = document.getElementById(btnId);
+    if (btn) btn.classList.add('open');
+    render();
+    positionPopup(btnId);
+  }
+
+  function close() {
+    document.getElementById('dp-popup').classList.remove('open');
+    document.getElementById('dp-overlay').classList.remove('open');
+    if (currentBtnId) {
+      const btn = document.getElementById(currentBtnId);
+      if (btn) btn.classList.remove('open');
+    }
+    currentInputId = null;
+    currentBtnId = null;
+    inMonthView = false;
+  }
+
+  function selectDate(iso) {
+    if (!currentInputId) return;
+    const inputEl = document.getElementById(currentInputId);
+    if (inputEl) inputEl.value = iso;
+    // Update the display button text — derive display id from input id
+    const displayId = currentInputId.replace(/^(f|ep|as)-date(-.*)?$/, (_, pfx, sfx) => `${pfx}-date-display${sfx || ''}`);
+    const displayEl = document.getElementById(displayId);
+    if (displayEl) displayEl.textContent = isoToDisplay(iso);
+    close();
+  }
+
+  function prev() {
+    if (inMonthView) { viewYear--; renderMonthGrid(); }
+    else { viewMonth--; if (viewMonth < 0) { viewMonth = 11; viewYear--; } renderDays(); }
+  }
+
+  function next() {
+    if (inMonthView) { viewYear++; renderMonthGrid(); }
+    else { viewMonth++; if (viewMonth > 11) { viewMonth = 0; viewYear++; } renderDays(); }
+  }
+
+  function toggleMonthView() {
+    inMonthView = !inMonthView;
+    render();
+  }
+
+  function selectMonth(m) {
+    viewMonth = m;
+    inMonthView = false;
+    render();
+  }
+
+  function goToday() {
+    selectDate(todayISO());
+  }
+
+  // Wire up static buttons once DOM is ready
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('dp-prev').addEventListener('click', () => DP.prev());
+    document.getElementById('dp-next').addEventListener('click', () => DP.next());
+    document.getElementById('dp-today-btn').addEventListener('click', () => DP.goToday());
+    document.getElementById('dp-clear-btn').addEventListener('click', () => DP.close());
+    document.getElementById('dp-year-prev').addEventListener('click', () => DP.prev());
+    document.getElementById('dp-year-next').addEventListener('click', () => DP.next());
+    // Prevent clicks inside popup from closing
+    document.getElementById('dp-popup').addEventListener('click', e => e.stopPropagation());
+  });
+
+  return { open, close, selectDate, prev, next, toggleMonthView, selectMonth, goToday };
+})();
+
+// Expose globally
+window.DP = DP;
+
+// Expose globally for inline onclick
+window.localLogin = localLogin;
+window.signOut = signOut;
+window.switchPage = switchPage;
+window.addEntry = addEntry;
+window.deleteEntry = deleteEntry;
+window.togglePeriod = togglePeriod;
+window.getGroupEntries = getGroupEntries;
+window.exportCSV = exportCSV;
+window.setLang = setLang;
+window.exportBackupZip = exportBackupZip;
+window.importBackup = importBackup;
+window.getCurrentPeriodEntries = getCurrentPeriodEntries;
+window.saveAnchor = saveAnchor;
+window.saveServices = saveServices;
+window.addService = addService;
+window.removeService = removeService;
+window.moveService = moveService;
+window.setTheme = setTheme;
+window.clearAllData = clearAllData;
+window.exportAllCSV = function(filename) { exportCSV(entries, filename); };
+window.setVerifyPeriod = setVerifyPeriod;
+window.setVerifySearch = setVerifySearch;
+window.toggleRoundedGlass = toggleRoundedGlass;
+window.toggleVerify = toggleVerify;
+window.checkAllVerify = checkAllVerify;
+window.uncheckAllVerify = uncheckAllVerify;
+window.toggleEditPanel = toggleEditPanel;
+window.toggleAddSvc = toggleAddSvc;
+window.saveEdit = saveEdit;
+window.addServiceToRO = addServiceToRO;
+window.toggleCompleteRO = toggleCompleteRO;
+window.toggleRoNote = toggleRoNote;
+window.saveRoNote = saveRoNote;
+window.deleteRoNote = deleteRoNote;
+window.toggleShowCompleted = toggleShowCompleted;
+window.toggleMovePeriod = toggleMovePeriod;
+window.toggleAnchorOpen = toggleAnchorOpen;
+window.moveROToPeriod = moveROToPeriod;
+// Cloud auth / sync
+window.emailSignIn = emailSignIn;
+window.emailSignUp = emailSignUp;
+window.toggleLocalPanel = toggleLocalPanel;
+window.syncNow = syncNow;
+window.loadFromCloud = loadFromCloud;
+// User menu
+window.toggleUserMenu = toggleUserMenu;
+window.closeUserMenu = closeUserMenu;
+window.renderInventory = renderInventory;
+window.invAdd = invAdd;
+window.invModalCancel = invModalCancel;
+window.invModalConfirm = invModalConfirm;
+window.invRotate = invRotate;
+window.invReplacePhoto = invReplacePhoto;
+window.invHandleReplace = invHandleReplace;
+window.invDelete = invDelete;
+window.invOpenLightbox = invOpenLightbox;
+window.invCloseLightbox = invCloseLightbox;
+</script>
+</body>
+</html>
